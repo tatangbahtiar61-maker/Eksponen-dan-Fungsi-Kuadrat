@@ -1,0 +1,1 @@
+# Eksponen-dan-Fungsi-Kuadrat
