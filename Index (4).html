@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eksponen dan Fungsi Kuadrat Interaktif</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#fff4e0;--panel:#fffaf0;--ink:#33283d;--mut:#7a6a80;--line:#f0dcc0;--acc:#c2255c;--acc2:#1c7ed6;--soft:#dcefff;--on:#fff;--pinksoft:#ffe0ec}
+html.dark{--bg:#1b1424;--panel:#251c31;--ink:#f8eaf1;--mut:#c4aebf;--line:#43365a;--acc:#ff8fb8;--acc2:#74c0fc;--soft:#243652;--on:#3a0f22;--pinksoft:#4a2338}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Lexend',system-ui,sans-serif;line-height:1.7;font-weight:300}
+h1,h2,h3,summary{font-family:'Newsreader',Georgia,serif}
+h2{font-size:1.9rem;font-weight:700;margin:0 0 .25rem}
+h3{font-size:1.15rem;font-weight:700;margin:1rem 0 .4rem}
+#side{box-sizing:border-box;position:fixed;inset:0 auto 0 0;width:270px;background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:1rem;z-index:30;transition:transform .2s}
+#side button.nav{display:block;width:100%;text-align:left;padding:.45rem .7rem;border-radius:8px;color:var(--ink);font-weight:400;font-size:.92rem}
+#side button.nav:hover{background:var(--soft)}
+#side button.nav.on{background:var(--acc);color:var(--on)}
+#side .grp{margin:1rem .3rem .3rem;color:var(--mut);font-size:.8rem;font-weight:600}
+#main{margin-left:270px;padding:1.5rem;max-width:1000px}
+#top{display:none}
+html.mob #side{transform:translateX(-100%)}
+html.mob #side.open{transform:none;box-shadow:0 0 40px #0006}
+html.mob #main{margin:0 auto;padding:1rem;max-width:560px}
+html.mob #top{display:flex;position:sticky;top:0;z-index:20;background:var(--pinksoft);border-bottom:1px solid var(--line);padding:.6rem 1rem;align-items:center;gap:.8rem}
+html.mob .hdr h1{font-size:1.2rem}
+html.mob .hdr .logo{width:52px;height:52px}
+html.pc body{min-width:960px}
+.sec{display:none}.sec.on{display:block}
+.lead{color:var(--mut);margin-bottom:1rem}
+details.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin:.8rem 0;padding:0 1rem}
+details.card[open]{padding-bottom:.8rem}
+summary{cursor:pointer;font-size:1.2rem;font-weight:700;padding:.8rem 0;color:var(--acc)}
+summary:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--acc2);outline-offset:2px}
+.grid8{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.6rem}
+.cell{border:1px solid var(--line);border-left:4px solid var(--acc2);border-radius:8px;padding:.5rem .8rem;background:var(--bg)}
+.cell small{color:var(--mut)}
+.box{border-left:4px solid var(--acc);background:var(--soft);padding:.5rem .9rem;border-radius:0 8px 8px 0;margin:.6rem 0}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem;display:block;overflow-x:auto}
+table.t th,table.t td{border:1px solid var(--line);padding:.45rem .6rem;text-align:left;vertical-align:top}
+table.t th{background:var(--pinksoft);font-weight:600}
+.sim{display:grid;gap:1rem;grid-template-columns:1fr}
+html:not(.mob) .sim{grid-template-columns:260px 1fr}
+.sim label{display:block;font-weight:400;font-size:.9rem;margin-top:.5rem}
+.sim input[type=range]{width:100%;accent-color:var(--acc)}
+.cv{position:relative;height:340px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.4rem}
+.out{background:var(--soft);border-radius:10px;padding:.6rem .9rem;font-size:.9rem;margin-top:.6rem}
+.btn{background:var(--acc);color:var(--on);border-radius:8px;padding:.5rem 1rem;font-weight:600}
+.btn.alt{background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+.inp{width:90px;padding:.4rem;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:.6rem .9rem;border-radius:10px;margin:.4rem 0}
+.opt:hover:not(:disabled){border-color:var(--acc)}
+.opt.ok{background:#2f9e4430;border-color:#2f9e44}.opt.no{background:#e0313130;border-color:#e03131}
+.katex-display{overflow-x:auto;overflow-y:hidden}
+[hidden]{display:none!important}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.pnl{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1rem;margin:.8rem 0}
+.trg{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.8rem}
+.trg label{font-size:.88rem;font-weight:400;color:var(--mut)}
+.trg select,.trg input[type=number]{width:100%;padding:.45rem;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;margin-top:.15rem}
+.tag{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:.1rem .7rem;font-size:.82rem;font-weight:600}
+.trbar{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
+.tq-img{display:block;max-width:100%;height:auto;margin:.5rem 0;border:1px solid var(--line);border-radius:8px;background:#fff}
+.tq-tx{margin:.3rem 0}
+.qn{width:2.3rem;height:2.3rem;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-weight:600}
+.qn.ok{background:#2f9e4430;border-color:#2f9e44}.qn.no{background:#e0313130;border-color:#e03131}
+.qn.cur{outline:2px solid var(--acc);outline-offset:1px}
+#tr-ok.sel{background:#2f9e44;color:#fff;border-color:#2f9e44}#tr-no.sel{background:#e03131;color:#fff;border-color:#e03131}
+.qbar{display:flex;gap:4px;margin:.5rem 0}.qbar i{flex:1;height:6px;border-radius:3px;background:var(--line)}.qbar i.ok{background:#2f9e44}.qbar i.no{background:#e03131}.qbar i.cur{background:var(--acc)}
+.score{font-family:Newsreader,Georgia,serif;font-size:3.2rem;font-weight:700;color:var(--acc);line-height:1.1}
+.dd{position:relative;display:block;margin:.3rem 0 .7rem}
+.dd small{display:block;color:var(--mut);margin-bottom:.2rem}
+.ddb{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:.45rem .9rem;border-radius:10px;min-width:280px;max-width:100%;text-align:left}
+.ddb::after{content:'\25BE';float:right;margin-left:.8rem;color:var(--acc)}
+.ddm{position:absolute;z-index:40;left:0;top:100%;min-width:280px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 28px #0003;margin:.2rem 0 0;padding:.3rem;list-style:none}
+.ddm[hidden]{display:none}
+.ddm li{padding:.45rem .7rem;border-radius:8px;cursor:pointer}
+.ddm li:hover,.ddm li:focus{background:var(--soft);outline:none}
+.ddm li[aria-selected=true]{background:var(--pinksoft);border-left:3px solid var(--acc)}
+.hdr{position:relative;overflow:hidden;min-height:130px;background:linear-gradient(180deg,#58aef5 0%,#9fd5ff 55%,#d9efff 100%);color:#0b2a4a;border:1px solid #9cccf3;border-radius:14px;padding:1.4rem 1.6rem;margin-bottom:1.4rem}
+.hdr>:not(.sky){position:relative;z-index:1}
+.sky{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.sky .cl{animation:drift 38s ease-in-out infinite alternate}
+.sky .cl2{animation-duration:52s;animation-direction:alternate-reverse}
+@keyframes drift{from{transform:translateX(-14px)}to{transform:translateX(22px)}}
+@media(prefers-reduced-motion:reduce){.sky .cl{animation:none}}
+.hdr{display:flex;align-items:center;gap:1rem}
+.logo{width:72px;height:72px;object-fit:contain;background:#fff;border-radius:12px;padding:5px;flex:none}
+.wm{position:fixed;inset:-30%;z-index:50;pointer-events:none;transform:rotate(-28deg);display:flex;flex-wrap:wrap;align-content:flex-start;gap:3.2rem 4rem;opacity:.07;color:var(--ink);font-weight:600;font-size:1.05rem;white-space:nowrap;user-select:none}
+.hdr .sch{font-weight:600;font-size:.95rem;opacity:.9}
+.hdr h1{font-family:'Newsreader',Georgia,serif;font-size:1.7rem;font-weight:700;line-height:1.25;margin:.2rem 0 0}
+html.dark .hdr{background:linear-gradient(180deg,#1d3f73 0%,#2f5d99 60%,#4a7db8 100%);color:#f4f9ff;border:1px solid var(--line)}
+html.dark .sky .cl{opacity:.4}
+.ftr{margin-top:2.5rem;padding:1rem 0;border-top:1px solid var(--line);color:var(--mut);font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wm" id="wm" aria-hidden="true"></div>
+<div id="top"><button id="burger" class="btn" aria-label="Buka menu">☰</button><strong style="font-family:Newsreader,serif">SMA S Al Kautsar Bandar Lampung</strong></div>
+<aside id="side" aria-label="Navigasi">
+  <img class="logo" style="width:56px;height:56px;margin:.2rem .3rem;border:1px solid var(--line)" src="https://drive.google.com/thumbnail?id=1d698Ummdjz0mjcv4LZ6UUw-Vm7wwhoau&sz=w200" alt="Logo SMA S Al Kautsar" onerror="this.style.display='none'">
+  <div style="font-family:Newsreader,serif;font-size:1.25rem;font-weight:700;line-height:1.3;margin:.2rem .3rem .6rem">SMA S Al Kautsar Bandar Lampung<div style="font-family:Lexend,sans-serif;font-size:.8rem;font-weight:300;color:var(--mut)">Pembelajaran Digital Eksponen dan Persamaan Kuadrat</div></div>
+  <button id="theme" class="btn alt" style="width:100%">Mode Gelap</button>
+  <label style="display:block;margin-top:.6rem;font-size:.85rem;color:var(--mut)">Tampilan
+    <select id="viewmode" class="inp" style="width:100%;margin-top:.2rem">
+      <option value="auto">Otomatis (sesuai perangkat)</option>
+      <option value="mob">Format HP</option>
+      <option value="pc">Format PC</option>
+    </select>
+  </label>
+  <nav id="nav"></nav>
+</aside>
+
+<main id="main">
+
+<header class="hdr">
+  <svg class="sky" aria-hidden="true" viewBox="0 0 800 220" preserveAspectRatio="xMaxYMid slice">
+    <defs>
+      <radialGradient id="sunglow"><stop offset="0" stop-color="#fff6bf"/><stop offset=".5" stop-color="#ffe066" stop-opacity=".75"/><stop offset="1" stop-color="#ffe066" stop-opacity="0"/></radialGradient>
+      <symbol id="cloud" viewBox="0 0 120 60"><g fill="#fff"><ellipse cx="60" cy="42" rx="50" ry="15"/><circle cx="36" cy="32" r="19"/><circle cx="62" cy="24" r="23"/><circle cx="88" cy="34" r="16"/></g></symbol>
+    </defs>
+    <circle cx="690" cy="58" r="92" fill="url(#sunglow)"/>
+    <g stroke="#ffd43b" stroke-width="4" stroke-linecap="round"><line x1="734" y1="58" x2="752" y2="58"/><line x1="721" y1="89" x2="734" y2="102"/><line x1="690" y1="102" x2="690" y2="120"/><line x1="659" y1="89" x2="646" y2="102"/><line x1="646" y1="58" x2="628" y2="58"/><line x1="659" y1="27" x2="646" y2="14"/><line x1="690" y1="14" x2="690" y2="-4"/><line x1="721" y1="27" x2="734" y2="14"/></g>
+    <circle cx="690" cy="58" r="34" fill="#ffd43b"/>
+    <use class="cl cl1" href="#cloud" x="30" y="120" width="170" height="85" opacity=".95"/>
+    <use class="cl cl2" href="#cloud" x="250" y="10" width="125" height="62" opacity=".85"/>
+    <use class="cl cl1" href="#cloud" x="420" y="118" width="190" height="95" opacity=".92"/>
+    <use class="cl cl2" href="#cloud" x="585" y="82" width="140" height="70" opacity=".95"/>
+  </svg>
+  <img class="logo" src="https://drive.google.com/thumbnail?id=1d698Ummdjz0mjcv4LZ6UUw-Vm7wwhoau&sz=w300" alt="Logo SMA S Al Kautsar" onerror="this.style.display='none'">
+  <div>
+    <div class="sch">SMA S Al Kautsar Bandar Lampung</div>
+    <h1>Pembelajaran Digital Eksponen dan Persamaan Kuadrat</h1>
+  </div>
+</header>
+
+<!-- ================= BAB 1 ================= -->
+<section class="sec on" id="s-eks" data-g="Bab 1: Eksponen & Bentuk Akar" data-t="Eksponen & Sifatnya">
+  <h2>Eksponen</h2><p class="lead">Cara singkat menulis perkalian berulang.</p>
+  <details class="card" open><summary>Definisi Eksponen</summary>
+    <p>Untuk bilangan real $a$ dan bilangan bulat positif $n$:</p>
+    $$a^n=\underbrace{a\times a\times \cdots\times a}_{n\text{ faktor}}$$
+    <p>$a$ disebut <b>basis</b> (bilangan pokok), $n$ disebut <b>pangkat</b> (eksponen), dan $a^n$ disebut bilangan berpangkat. Contoh: $2^5=2\times2\times2\times2\times2=32$.</p>
+  </details>
+  <details class="card" open><summary>8 Sifat Eksponen</summary>
+    <p>Syarat: $a,b\neq 0$, $m,n$ bilangan bulat (atau rasional untuk sifat 8).</p>
+    <div class="grid8">
+      <div class="cell"><small>1. Perkalian</small><br>$a^m\cdot a^n=a^{m+n}$</div>
+      <div class="cell"><small>2. Pembagian</small><br>$\dfrac{a^m}{a^n}=a^{m-n}$</div>
+      <div class="cell"><small>3. Pangkat dari pangkat</small><br>$(a^m)^n=a^{m\cdot n}$</div>
+      <div class="cell"><small>4. Pangkat perkalian</small><br>$(a\cdot b)^n=a^n\cdot b^n$</div>
+      <div class="cell"><small>5. Pangkat pembagian</small><br>$\left(\dfrac{a}{b}\right)^n=\dfrac{a^n}{b^n}$</div>
+      <div class="cell"><small>6. Pangkat nol</small><br>$a^0=1$</div>
+      <div class="cell"><small>7. Pangkat negatif</small><br>$a^{-n}=\dfrac{1}{a^n}$</div>
+      <div class="cell"><small>8. Pangkat pecahan</small><br>$a^{\frac{m}{n}}=\sqrt[n]{a^m}$</div>
+    </div>
+  </details>
+</section>
+
+<section class="sec" id="s-akar" data-g="Bab 1: Eksponen & Bentuk Akar" data-t="Bentuk Akar">
+  <h2>Bentuk Akar</h2><p class="lead">Akar yang hasilnya bukan bilangan rasional.</p>
+  <details class="card" open><summary>Definisi</summary>
+    <p>$\sqrt[n]{a}=a^{\frac1n}$. Bentuk akar adalah akar yang nilainya irasional, misalnya $\sqrt2,\ \sqrt3,\ \sqrt[3]{5}$. Untuk $n$ genap, syaratnya $a\ge 0$.</p>
+  </details>
+  <details class="card" open><summary>Sifat-sifat Operasi Bentuk Akar</summary>
+    <div class="grid8">
+      <div class="cell">$\sqrt{a}\cdot\sqrt{b}=\sqrt{ab}$</div>
+      <div class="cell">$\dfrac{\sqrt a}{\sqrt b}=\sqrt{\dfrac ab}$</div>
+      <div class="cell">$p\sqrt c\pm q\sqrt c=(p\pm q)\sqrt c$</div>
+      <div class="cell">$\sqrt{a^2b}=a\sqrt b$</div>
+      <div class="cell">$\sqrt{(a+b)\pm2\sqrt{ab}}=\sqrt a\pm\sqrt b$ (untuk $a&gt;b$)</div>
+      <div class="cell">$\sqrt[n]{a^m}=a^{m/n}$</div>
+    </div>
+  </details>
+  <details class="card" open><summary>3 Rumus Merasionalkan Penyebut</summary>
+    <table class="t"><tr><th>Bentuk penyebut</th><th>Dikali sekawan</th><th>Hasil</th></tr>
+    <tr><td>$\dfrac{c}{\sqrt b}$</td><td>$\dfrac{\sqrt b}{\sqrt b}$</td><td>$\dfrac{c\sqrt b}{b}$</td></tr>
+    <tr><td>$\dfrac{c}{a\pm\sqrt b}$</td><td>$\dfrac{a\mp\sqrt b}{a\mp\sqrt b}$</td><td>$\dfrac{c(a\mp\sqrt b)}{a^2-b}$</td></tr>
+    <tr><td>$\dfrac{c}{\sqrt a\pm\sqrt b}$</td><td>$\dfrac{\sqrt a\mp\sqrt b}{\sqrt a\mp\sqrt b}$</td><td>$\dfrac{c(\sqrt a\mp\sqrt b)}{a-b}$</td></tr></table>
+    <div class="box">Contoh: $\dfrac{6}{3-\sqrt3}=\dfrac{6(3+\sqrt3)}{9-3}=3+\sqrt3$</div>
+  </details>
+</section>
+
+<section class="sec" id="s-fe" data-g="Bab 1: Eksponen & Bentuk Akar" data-t="Fungsi Eksponen">
+  <h2>Fungsi Eksponen</h2><p class="lead">Fungsi dengan variabel $x$ pada pangkat.</p>
+  <details class="card" open><summary>Bentuk Umum &amp; Karakteristik</summary>
+    $$f(x)=k\cdot a^x+c,\quad a&gt;0,\ a\neq1,\ k\neq0$$
+    <ul style="list-style:disc;padding-left:1.3rem">
+      <li><b>Domain:</b> $D_f=\{x\mid x\in\mathbb R\}$</li>
+      <li><b>Range:</b> $y&gt;c$ jika $k&gt;0$; $y&lt;c$ jika $k&lt;0$</li>
+      <li><b>Asimtot datar:</b> $y=c$</li>
+      <li><b>Monoton:</b> naik jika $a&gt;1$ (untuk $k&gt;0$), turun jika $0&lt;a&lt;1$ (untuk $k&gt;0$). Untuk $k&lt;0$ sebaliknya.</li>
+    </ul>
+  </details>
+  <details class="card" open><summary>Langkah Menggambar Sketsa</summary>
+    <ol style="list-style:decimal;padding-left:1.3rem">
+      <li>Gambar asimtot datar $y=c$ sebagai garis putus-putus.</li>
+      <li>Titik potong sumbu-$y$: substitusi $x=0$, diperoleh $(0,\,k+c)$.</li>
+      <li>Titik potong sumbu-$x$: selesaikan $k\cdot a^x+c=0$, hanya ada jika $-c/k&gt;0$.</li>
+      <li>Buat beberapa titik bantu, misalnya $x=-2,-1,1,2$.</li>
+      <li>Hubungkan titik dengan kurva mulus yang mendekati asimtot tetapi tidak menyentuhnya.</li>
+    </ol>
+  </details>
+  <details class="card" open><summary>Simulator Grafik Eksponen</summary>
+    <div class="sim">
+      <div>
+        <label>Basis $a$ = <b id="eav"></b><input class="sl" data-up="upE" id="ea" type="range" min="0.2" max="4" step="0.1" value="2"></label>
+        <label>Pengali $k$ = <b id="ekv"></b><input class="sl" data-up="upE" id="ek" type="range" min="-3" max="3" step="0.5" value="1"></label>
+        <label>Konstanta $c$ = <b id="ecv"></b><input class="sl" data-up="upE" id="ec" type="range" min="-5" max="5" step="0.5" value="0"></label>
+        <div class="out" id="ei"></div>
+      </div>
+      <div class="cv"><canvas id="ce"></canvas></div>
+    </div>
+  </details>
+</section>
+
+<section class="sec" id="s-pe" data-g="Bab 1: Eksponen & Bentuk Akar" data-t="Persamaan Eksponen">
+  <h2>Persamaan Eksponen</h2><p class="lead">Persamaan dengan variabel pada pangkat atau basis.</p>
+  <details class="card" open><summary>5 Bentuk Persamaan Eksponen</summary>
+    <table class="t"><tr><th>No</th><th>Bentuk</th><th>Penyelesaian &amp; syarat</th></tr>
+    <tr><td>1</td><td>$a^{f(x)}=a^{p}$</td><td>$f(x)=p$ &nbsp;($a&gt;0,\ a\neq1$)</td></tr>
+    <tr><td>2</td><td>$a^{f(x)}=a^{g(x)}$</td><td>$f(x)=g(x)$ &nbsp;($a&gt;0,\ a\neq1$)</td></tr>
+    <tr><td>3</td><td>$a^{f(x)}=b^{f(x)}$</td><td>$f(x)=0$ &nbsp;($a\neq b$, $a,b&gt;0$)</td></tr>
+    <tr><td>4</td><td>$h(x)^{f(x)}=h(x)^{g(x)}$</td><td>$f(x)=g(x)$; $h(x)=1$; $h(x)=0$ (jika $f,g&gt;0$); $h(x)=-1$ (jika $f,g$ sama-sama genap atau sama-sama ganjil)</td></tr>
+    <tr><td>5</td><td>$A\,(a^x)^2+B\,a^x+C=0$</td><td>Misalkan $y=a^x$ dengan $y&gt;0$, selesaikan persamaan kuadrat $Ay^2+By+C=0$, lalu kembalikan ke $x$.</td></tr></table>
+    <div class="box">Contoh bentuk 5: $4^x-3\cdot2^x+2=0$. Misal $y=2^x$, maka $y^2-3y+2=0$, sehingga $y=1$ atau $y=2$. Jadi $x=0$ atau $x=1$.</div>
+  </details>
+</section>
+
+<section class="sec" id="s-app" data-g="Bab 1: Eksponen & Bentuk Akar" data-t="Penerapan Eksponen">
+  <h2>Penerapan Eksponen</h2><p class="lead">Pertumbuhan dan peluruhan: besaran berubah dengan faktor tetap pada setiap periode.</p>
+  <details class="card" open><summary>Konsep Pertumbuhan dan Peluruhan</summary>
+    <p>Banyak besaran di sekitar kita berubah secara eksponensial, misalnya jumlah bakteri, penduduk, massa zat radioaktif, nilai barang yang menyusut, dan tabungan berbunga majemuk. Modelnya adalah fungsi eksponen:</p>
+    $$N(t)=N_0\cdot a^{t},\quad a&gt;0,\ a\neq1$$
+    <ul style="list-style:disc;padding-left:1.3rem">
+      <li><b>Pertumbuhan eksponensial:</b> $a&gt;1$ (nilai bertambah, kurva naik).</li>
+      <li><b>Peluruhan eksponensial:</b> $0&lt;a&lt;1$ (nilai berkurang, kurva turun mendekati sumbu-$t$).</li>
+    </ul>
+  </details>
+  <details class="card" open><summary>Rumus-rumus Penerapan</summary>
+    <table class="t"><tr><th>Situasi</th><th>Rumus</th><th>Keterangan</th></tr>
+    <tr><td>Pertumbuhan persentase</td><td>$N=N_0(1+r)^t$</td><td>$r$ = laju pertumbuhan per periode (5% berarti $r=0{,}05$)</td></tr>
+    <tr><td>Peluruhan persentase / penyusutan</td><td>$N=N_0(1-r)^t$</td><td>$r$ = laju penurunan per periode</td></tr>
+    <tr><td>Waktu penggandaan</td><td>$N=N_0\cdot a^{t/T}$</td><td>$T$ = waktu agar nilai menjadi $a$ kali lipat (dua kali lipat: $a=2$)</td></tr>
+    <tr><td>Waktu paruh</td><td>$N=N_0\left(\dfrac12\right)^{t/T}$</td><td>$T$ = waktu agar nilai tersisa setengahnya</td></tr>
+    <tr><td>Bunga majemuk</td><td>$M=M_0(1+i)^n$</td><td>$i$ = bunga per periode, $n$ = banyak periode</td></tr></table>
+    <div class="box">$N_0$ adalah nilai awal ($t=0$) dan $N$ adalah nilai setelah waktu $t$. Untuk mencari waktu $t$, samakan basis lalu selesaikan sebagai persamaan eksponen.</div>
+  </details>
+  <details class="card" open><summary>Simulator Pertumbuhan dan Peluruhan</summary>
+    <div class="sim">
+      <div>
+        <label>Nilai awal $N_0$ = <b id="gnv"></b><input class="sl" data-up="upG" id="gn" type="range" min="10" max="200" step="10" value="100"></label>
+        <label>Laju $r$ per periode = <b id="grv"></b>%<input class="sl" data-up="upG" id="gr" type="range" min="-50" max="100" step="5" value="20"></label>
+        <div class="out" id="gi"></div>
+      </div>
+      <div class="cv"><canvas id="cg"></canvas></div>
+    </div>
+  </details>
+</section>
+
+<!-- ================= BAB 2 ================= -->
+<section class="sec" id="s-pk" data-g="Bab 2: Persamaan & Fungsi Kuadrat" data-t="Persamaan Kuadrat">
+  <h2>Persamaan Kuadrat</h2>
+  <details class="card" open><summary>Bentuk Umum</summary>
+    $$ax^2+bx+c=0,\quad a\neq0$$
+    <p>Akar-akarnya, $x_1$ dan $x_2$, adalah nilai $x$ yang memenuhi persamaan.</p>
+  </details>
+  <details class="card" open><summary>3 Cara Mencari Akar</summary>
+    <h3>1. Pemfaktoran</h3>
+    <p>Cari dua bilangan $p,q$ dengan $p+q=b$ dan $p\cdot q=a\cdot c$, lalu faktorkan. Contoh: $x^2-5x+6=(x-2)(x-3)=0\Rightarrow x=2$ atau $x=3$.</p>
+    <h3>2. Melengkapkan Kuadrat Sempurna</h3>
+    <p>Ubah menjadi $(x+p)^2=q$. Contoh: $x^2+6x+5=0\Rightarrow(x+3)^2=4\Rightarrow x=-3\pm2$, jadi $x=-1$ atau $x=-5$.</p>
+    <h3>3. Rumus ABC</h3>
+    $$x_{1,2}=\frac{-b\pm\sqrt{b^2-4ac}}{2a}$$
+  </details>
+  <details class="card" open><summary>Sifat Akar (Teorema Vieta)</summary>
+    <div class="grid8">
+      <div class="cell">Jumlah akar<br>$x_1+x_2=-\dfrac ba$</div>
+      <div class="cell">Hasil kali akar<br>$x_1\cdot x_2=\dfrac ca$</div>
+      <div class="cell">Selisih akar<br>$|x_1-x_2|=\dfrac{\sqrt D}{|a|}$</div>
+    </div>
+  </details>
+  <details class="card" open><summary>Diskriminan</summary>
+    $$D=b^2-4ac$$
+    <table class="t"><tr><th>Nilai $D$</th><th>Jenis akar</th><th>Grafik terhadap sumbu-$x$</th></tr>
+    <tr><td>$D&gt;0$</td><td>Dua akar real berbeda</td><td>Memotong di dua titik</td></tr>
+    <tr><td>$D=0$</td><td>Dua akar real kembar</td><td>Menyinggung di satu titik</td></tr>
+    <tr><td>$D&lt;0$</td><td>Tidak ada akar real (akar kompleks)</td><td>Tidak memotong</td></tr></table>
+  </details>
+  <details class="card" id="pkb" open><summary>Menyusun Persamaan Kuadrat Baru</summary>
+    <h3>1. Dari akar-akar yang diketahui</h3>
+    <p>Jika akar-akarnya $x_1$ dan $x_2$, maka persamaan kuadratnya:</p>
+    $$(x-x_1)(x-x_2)=0\ \Longleftrightarrow\ x^2-(x_1+x_2)x+x_1x_2=0$$
+    <p>Jika ada akar pecahan, kalikan persamaan dengan penyebutnya agar koefisiennya bilangan bulat.</p>
+    <h3>2. Dari akar-akar yang berhubungan dengan persamaan lain</h3>
+    <p>Misalkan $ax^2+bx+c=0$ mempunyai akar $\alpha$ dan $\beta$, sehingga $\alpha+\beta=-\dfrac ba$ dan $\alpha\beta=\dfrac ca$.</p>
+    <ol style="list-style:decimal;padding-left:1.3rem">
+      <li>Tentukan $\alpha+\beta$ dan $\alpha\beta$ dari persamaan yang diketahui.</li>
+      <li>Hitung jumlah dan hasil kali akar-akar yang baru.</li>
+      <li>Susun $x^2-(\text{jumlah akar baru})\,x+(\text{hasil kali akar baru})=0$.</li>
+    </ol>
+    <table class="t"><tr><th>Akar-akar baru</th><th>Jumlah akar baru</th><th>Hasil kali akar baru</th></tr>
+    <tr><td>$\alpha+k$ dan $\beta+k$</td><td>$\alpha+\beta+2k$</td><td>$\alpha\beta+k(\alpha+\beta)+k^2$</td></tr>
+    <tr><td>$p\alpha$ dan $p\beta$</td><td>$p(\alpha+\beta)$</td><td>$p^2\alpha\beta$</td></tr>
+    <tr><td>$\dfrac1\alpha$ dan $\dfrac1\beta$</td><td>$\dfrac{\alpha+\beta}{\alpha\beta}$</td><td>$\dfrac1{\alpha\beta}$</td></tr>
+    <tr><td>$-\alpha$ dan $-\beta$</td><td>$-(\alpha+\beta)$</td><td>$\alpha\beta$</td></tr>
+    <tr><td>$\alpha^2$ dan $\beta^2$</td><td>$(\alpha+\beta)^2-2\alpha\beta$</td><td>$(\alpha\beta)^2$</td></tr></table>
+  </details>
+</section>
+
+<section class="sec" id="s-fk" data-g="Bab 2: Persamaan & Fungsi Kuadrat" data-t="Fungsi Kuadrat">
+  <h2>Fungsi Kuadrat</h2>
+  <details class="card" open><summary>Bentuk Umum, Domain &amp; Range</summary>
+    $$f(x)=ax^2+bx+c,\quad a\neq0$$
+    <p><b>Domain:</b> $x\in\mathbb R$. <b>Range:</b> $y\ge y_p$ jika $a&gt;0$, dan $y\le y_p$ jika $a&lt;0$ (dengan $y_p$ nilai optimum). Grafiknya berbentuk parabola.</p>
+  </details>
+  <details class="card" open><summary>Istilah pada Grafik</summary>
+    <table class="t"><tr><th>Istilah</th><th>Rumus / aturan</th></tr>
+    <tr><td>Arah buka kurva</td><td>$a&gt;0$ membuka ke atas, $a&lt;0$ membuka ke bawah</td></tr>
+    <tr><td>Titik potong sumbu-$x$</td><td>Selesaikan $ax^2+bx+c=0$, titik $(x_1,0)$ dan $(x_2,0)$</td></tr>
+    <tr><td>Titik potong sumbu-$y$</td><td>$(0,\,c)$</td></tr>
+    <tr><td>Sumbu simetri</td><td>$x=-\dfrac{b}{2a}$</td></tr>
+    <tr><td>Nilai optimum</td><td>$y_p=-\dfrac{D}{4a}$ (minimum jika $a&gt;0$, maksimum jika $a&lt;0$)</td></tr>
+    <tr><td>Titik puncak</td><td>$\left(-\dfrac{b}{2a},\ -\dfrac{D}{4a}\right)$</td></tr></table>
+  </details>
+  <details class="card" open><summary>Langkah Menggambar Sketsa</summary>
+    <ol style="list-style:decimal;padding-left:1.3rem">
+      <li>Tentukan arah buka dari tanda $a$.</li>
+      <li>Hitung titik potong sumbu-$x$ (jika $D\ge0$) dan sumbu-$y$ $(0,c)$.</li>
+      <li>Hitung sumbu simetri dan titik puncak.</li>
+      <li>Tambahkan titik bantu bila perlu, lalu hubungkan menjadi kurva mulus.</li>
+    </ol>
+  </details>
+  <details class="card" open><summary>Simulator Grafik Parabola</summary>
+    <div class="sim">
+      <div>
+        <label>$a$ = <b id="qav"></b><input class="sl" data-up="upQ" id="qa" type="range" min="-5" max="5" step="0.1" value="1"></label>
+        <label>$b$ = <b id="qbv"></b><input class="sl" data-up="upQ" id="qb" type="range" min="-10" max="10" step="0.1" value="-2"></label>
+        <label>$c$ = <b id="qcv"></b><input class="sl" data-up="upQ" id="qc" type="range" min="-10" max="10" step="0.1" value="-3"></label>
+        <div class="out" id="qi"></div>
+      </div>
+      <div class="cv"><canvas id="cq"></canvas></div>
+    </div>
+  </details>
+</section>
+
+<section class="sec" id="s-sf" data-g="Bab 2: Persamaan & Fungsi Kuadrat" data-t="Menyusun Fungsi Kuadrat">
+  <h2>Menyusun Fungsi Kuadrat</h2><p class="lead">Pilih rumus sesuai titik yang diketahui.</p>
+  <details class="card" open><summary>3 Rumus Penyusunan</summary>
+    <table class="t"><tr><th>Diketahui</th><th>Rumus</th><th>Langkah</th></tr>
+    <tr><td>Titik potong sumbu-$x$: $(x_1,0)$ dan $(x_2,0)$, serta satu titik lain</td><td>$y=a(x-x_1)(x-x_2)$</td><td>Substitusi titik lain untuk mencari $a$.</td></tr>
+    <tr><td>Titik puncak $(p,q)$ dan satu titik lain</td><td>$y=a(x-p)^2+q$</td><td>Substitusi titik lain untuk mencari $a$. Jika menyinggung sumbu-$x$ di $x_1$: $y=a(x-x_1)^2$.</td></tr>
+    <tr><td>Tiga titik sembarang</td><td>$y=ax^2+bx+c$</td><td>Substitusi tiga titik, selesaikan sistem tiga persamaan untuk $a,b,c$.</td></tr></table>
+    <div class="box">Contoh: melalui $(1,0)$, $(3,0)$, dan $(0,3)$. $y=a(x-1)(x-3)$; di $x=0$: $3a=3\Rightarrow a=1$. Jadi $y=x^2-4x+3$.</div>
+  </details>
+</section>
+
+<!-- ================= ALAT ================= -->
+
+
+<section class="sec" id="s-kal" data-g="Alat Bantu" data-t="Kalkulator Mini">
+  <h2>Kalkulator Mini</h2><p class="lead">Masukkan $a$, $b$, dan $c$ dari $ax^2+bx+c$. Hasil muncul otomatis.</p>
+  <div class="flex flex-wrap gap-3 items-center" style="margin:.6rem 0">
+    <label>a <input class="inp" id="ka" type="number" step="any" value="1"></label>
+    <label>b <input class="inp" id="kb" type="number" step="any" value="-5"></label>
+    <label>c <input class="inp" id="kc" type="number" step="any" value="6"></label>
+  </div>
+  <div class="out" id="ko"></div>
+</section>
+
+<section class="sec" id="s-kuis" data-g="Alat Bantu" data-t="Latihan Soal">
+  <h2>Latihan Soal</h2><p class="lead">10 soal pilihan ganda (A sampai E) yang berurutan dari semua materi Bab 1 dan Bab 2. Setelah selesai, mulai latihan baru dengan soal yang berbeda.</p>
+  <div id="quiz"></div>
+</section>
+
+<section class="sec" id="s-try" data-g="Alat Bantu" data-t="Tryout">
+  <h2>Tryout</h2>
+  <div id="tr-load" class="out">Memuat bank soal...</div>
+
+  <div id="tr-setup" hidden>
+    <div class="pnl">
+      <div class="trg">
+        <label>Jenis ujian (Keterangan)<select id="tr-ket"></select></label>
+        <label>Materi<select id="tr-mat"></select></label>
+        <label>Jumlah soal<select id="tr-n"><option value="5">5 soal</option><option value="10" selected>10 soal</option><option value="20">20 soal</option><option value="30">30 soal</option><option value="all">Semua soal</option></select></label>
+        <label>Urutan soal<select id="tr-ord"><option value="acak">Acak</option><option value="urut">Sesuai nomor</option></select></label>
+        <label>Batas waktu<span style="display:flex;gap:.5rem;align-items:center;margin-top:.1rem"><input type="checkbox" id="tr-tm" style="width:auto;accent-color:var(--acc)"><input type="number" id="tr-min" min="1" max="300" value="30" style="width:80px"><span>menit</span></span></label>
+      </div>
+      <div class="out" id="tr-info"></div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem">
+        <button class="btn" id="tr-start" type="button">Mulai Tryout</button>
+        <button class="btn alt" id="tr-reload" type="button">Muat ulang</button>
+      </div>
+    </div>
+    <div class="box">Cara menilai: kerjakan soal, buka pembahasan, lalu pilih apakah jawabanmu benar atau salah. Skor dihitung dari penilaianmu.</div>
+  </div>
+
+  <div id="tr-run" hidden>
+    <div class="trbar"><div id="tr-qh"></div><span id="tr-time" class="tag"></span></div>
+    <div class="pnl"><div id="tr-qb"></div></div>
+    <button class="btn" id="tr-rev" type="button">Lihat Pembahasan</button>
+    <div id="tr-pbox" hidden>
+      <div class="box"><b>Pembahasan</b><div id="tr-pb"></div></div>
+      <p style="margin:.6rem 0 .3rem">Bagaimana jawabanmu?</p>
+      <button class="btn alt" id="tr-ok" type="button">Jawaban saya benar</button>
+      <button class="btn alt" id="tr-no" type="button">Jawaban saya salah</button>
+    </div>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0 .4rem">
+      <button class="btn alt" id="tr-prev" type="button">Sebelumnya</button>
+      <button class="btn alt" id="tr-next" type="button">Berikutnya</button>
+      <button class="btn" id="tr-fin" type="button">Selesai</button>
+    </div>
+    <div id="tr-warn" style="color:var(--acc);font-weight:600"></div>
+    <div id="tr-grid" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem"></div>
+  </div>
+
+  <div id="tr-res" hidden></div>
+</section>
+
+<footer class="ftr">Hak Cipta &copy; 2026 Dokumen Pembelajaran Digital SMA S Al Kautsar</footer>
+
+</main>
+
+<script>
+const $=s=>document.querySelector(s), R=String.raw;
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const f=n=>{const r=Math.round(n*100)/100;return Object.is(r,-0)?'0':String(r)};
+const M=el=>{if(window.renderMathInElement)renderMathInElement(el||document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})};
+let CE,CQ,CG;
+
+/* ---------- Navigasi ---------- */
+function buildNav(){
+  let g='',h='';
+  document.querySelectorAll('.sec').forEach(s=>{
+    if(s.dataset.g!==g){g=s.dataset.g;h+=`<div class="grp">${g}</div>`}
+    h+=`<button class="nav${s.classList.contains('on')?' on':''}" data-id="${s.id}">${s.dataset.t}</button>`;
+  });
+  $('#nav').innerHTML=h;
+  $('#nav').addEventListener('click',e=>{const b=e.target.closest('button.nav');if(b)show(b.dataset.id)});
+}
+function show(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('on',s.id===id));
+  document.querySelectorAll('button.nav').forEach(b=>b.classList.toggle('on',b.dataset.id===id));
+  $('#side').classList.remove('open');window.scrollTo(0,0);
+  if(id==='s-fe'&&CE){CE.resize();upE()}
+  if(id==='s-fk'&&CQ){CQ.resize();upQ()}
+  if(id==='s-app'&&CG){CG.resize();upG()}
+  if(id==='s-try')initTry();
+}
+$('#burger').onclick=()=>$('#side').classList.toggle('open');
+
+/* ---------- Tema ---------- */
+function setTheme(d){
+  document.documentElement.classList.toggle('dark',d);
+  $('#theme').textContent=d?'Mode Terang':'Mode Gelap';
+  try{localStorage.setItem('tema',d?'d':'l')}catch(e){}
+  if(CE){upE();upQ();upG()}
+}
+$('#theme').onclick=()=>setTheme(!document.documentElement.classList.contains('dark'));
+
+/* ---------- Mode Tampilan (otomatis HP / PC) ---------- */
+let VM='auto';
+function applyView(){
+  const h=document.documentElement;
+  const mob=VM==='mob'||(VM==='auto'&&(window.innerWidth<820||/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)&&window.innerWidth<1024));
+  h.classList.toggle('mob',mob);
+  h.classList.toggle('pc',VM==='pc');
+  if(!mob)$('#side').classList.remove('open');
+  if(typeof CE!=='undefined'&&CE){CE.resize();CQ.resize()}
+}
+$('#viewmode').onchange=e=>{VM=e.target.value;try{localStorage.setItem('mode',VM)}catch(x){}applyView()};
+window.addEventListener('resize',()=>{if(VM==='auto')applyView()});
+
+/* ---------- Grafik ---------- */
+function mkChart(id,xr,yr){
+  const ax=(r,pos)=>({type:'linear',min:r[0],max:r[1],position:pos,grid:{color:css('--line')},ticks:{color:css('--mut')}});
+  return new Chart($(id),{type:'scatter',data:{datasets:[]},options:{animation:false,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:css('--ink'),boxWidth:14}}},
+    scales:{x:Object.assign(ax(xr,{y:0}),{}),y:ax(yr,{x:0})}}});
+}
+function styleAxes(ch){
+  ['x','y'].forEach(k=>{ch.options.scales[k].grid.color=css('--line');ch.options.scales[k].ticks.color=css('--mut')});
+  ch.options.plugins.legend.labels.color=css('--ink');
+}
+const line=(label,data,col,dash)=>({label,data,showLine:true,borderColor:col,borderWidth:dash?2:3,borderDash:dash||[],pointRadius:0});
+const dot=(label,data,col)=>({label,data,pointRadius:6,backgroundColor:col,borderColor:col});
+
+function upE(){
+  if(!CE)return;
+  const a=+$('#ea').value,k=+$('#ek').value,c=+$('#ec').value,pts=[];
+  for(let x=-4;x<=4.001;x+=0.05)pts.push({x,y:k*Math.pow(a,x)+c});
+  styleAxes(CE);
+  CE.data.datasets=[
+    line(`y = ${f(k)}·${f(a)}^x ${c<0?'−':'+'} ${f(Math.abs(c))}`,pts,css('--acc2')),
+    line(`asimtot y = ${f(c)}`,[{x:-4,y:c},{x:4,y:c}],css('--acc'),[6,5]),
+    dot(`potong sumbu-y (0, ${f(k+c)})`,[{x:0,y:k+c}],css('--ink'))
+  ];
+  CE.update();
+  const naik=(a>1)===(k>0);
+  let t=`<b>Asimtot datar:</b> y = ${f(c)}<br><b>Domain:</b> semua bilangan real<br><b>Range:</b> y ${k>0?'&gt;':'&lt;'} ${f(c)}<br>`;
+  t+=Math.abs(a-1)<0.05?'<b>Perhatian:</b> a = 1 bukan fungsi eksponen (grafik berupa garis datar).':`<b>Sifat:</b> ${a>1?'basis a &gt; 1':'basis 0 &lt; a &lt; 1'}, kurva <b>monoton ${naik?'naik':'turun'}</b>.`;
+  $('#ei').innerHTML=t;
+}
+function upG(){
+  if(!CG)return;
+  const n0=+$('#gn').value,r=+$('#gr').value/100,pts=[];
+  for(let t=0;t<=10.001;t+=0.1)pts.push({x:t,y:n0*Math.pow(1+r,t)});
+  styleAxes(CG);CG.options.scales.x.title.color=css('--mut');
+  CG.data.datasets=[line(`N = ${n0}·(${f(1+r)})^t`,pts,r>=0?css('--acc2'):css('--acc')),dot(`N₀ = ${n0}`,[{x:0,y:n0}],css('--ink'))];
+  CG.update();
+  const fk=1+r;let t=`<b>Faktor tiap periode:</b> 1 ${r>=0?'+':'−'} ${f(Math.abs(r))} = ${f(fk)}<br>`;
+  if(r>0)t+=`<b>Pertumbuhan.</b> Waktu penggandaan ≈ ${f(Math.log(2)/Math.log(fk))} periode.<br>`;
+  else if(r<0)t+=`<b>Peluruhan.</b> Waktu paruh ≈ ${f(Math.log(.5)/Math.log(fk))} periode.<br>`;
+  else t+='Tidak berubah (r = 0).<br>';
+  $('#gi').innerHTML=t+`<b>Nilai pada t = 10:</b> ${f(n0*Math.pow(fk,10))}`;
+}
+function upQ(){
+  if(!CQ)return;
+  const a=+$('#qa').value,b=+$('#qb').value,c=+$('#qc').value;
+  styleAxes(CQ);
+  if(Math.abs(a)<0.05){$('#qi').innerHTML='<b>Perhatian:</b> a harus tidak sama dengan 0. Jika a = 0, grafiknya garis lurus.';CQ.data.datasets=[line('y = bx + c',[{x:-10,y:-10*b+c},{x:10,y:10*b+c}],css('--acc2'))];CQ.update();return}
+  const D=b*b-4*a*c,xp=-b/(2*a),yp=-D/(4*a),pts=[];
+  for(let x=-10;x<=10.001;x+=0.05)pts.push({x,y:a*x*x+b*x+c});
+  const ds=[line(`y = ${f(a)}x² ${b<0?'−':'+'} ${f(Math.abs(b))}x ${c<0?'−':'+'} ${f(Math.abs(c))}`,pts,css('--acc2')),
+    line(`sumbu simetri x = ${f(xp)}`,[{x:xp,y:-10},{x:xp,y:10}],css('--acc'),[6,5]),
+    dot(`puncak (${f(xp)}, ${f(yp)})`,[{x:xp,y:yp}],css('--ink')),
+    dot(`potong sumbu-y (0, ${f(c)})`,[{x:0,y:c}],'#2f9e44')];
+  let akar;
+  if(D>=0){const r1=(-b+Math.sqrt(D))/(2*a),r2=(-b-Math.sqrt(D))/(2*a);
+    ds.push(dot('potong sumbu-x',[{x:r1,y:0},{x:r2,y:0}],'#e03131'));
+    akar=D===0?`x = ${f(r1)} (kembar)`:`x₁ = ${f(r1)}, x₂ = ${f(r2)}`}
+  else akar='tidak ada akar real';
+  CQ.data.datasets=ds;CQ.update();
+  $('#qi').innerHTML=`<b>Titik puncak:</b> (${f(xp)}, ${f(yp)})<br><b>Diskriminan D:</b> ${f(D)} (${D>0?'D &gt; 0':D===0?'D = 0':'D &lt; 0'})<br><b>Arah buka:</b> ${a>0?'ke atas':'ke bawah'}<br><b>Nilai ${a>0?'minimum':'maksimum'}:</b> ${f(yp)}<br><b>Akar:</b> ${akar}`;
+}
+
+/* ---------- Kalkulator ---------- */
+function upK(){
+  const a=parseFloat($('#ka').value),b=parseFloat($('#kb').value),c=parseFloat($('#kc').value),o=$('#ko');
+  if([a,b,c].some(isNaN)){o.textContent='Isi nilai a, b, dan c dengan angka.';return}
+  if(a===0){o.textContent='Nilai a tidak boleh 0 (bukan persamaan kuadrat).';return}
+  const D=b*b-4*a*c,xp=-b/(2*a),yp=-D/(4*a);let ak;
+  if(D>0)ak=`x₁ = ${f((-b+Math.sqrt(D))/(2*a))}, x₂ = ${f((-b-Math.sqrt(D))/(2*a))}`;
+  else if(D===0)ak=`x₁ = x₂ = ${f(xp)}`;
+  else ak=`x₁ = ${f(xp)} + ${f(Math.sqrt(-D)/(2*Math.abs(a)))}i, x₂ = ${f(xp)} − ${f(Math.sqrt(-D)/(2*Math.abs(a)))}i (kompleks)`;
+  o.innerHTML=`<b>Diskriminan:</b> D = ${f(D)}<br><b>Akar-akar:</b> ${ak}<br><b>x₁ + x₂:</b> ${f(-b/a)} &nbsp; <b>x₁ · x₂:</b> ${f(c/a)}<br><b>Sumbu simetri:</b> x = ${f(xp)}<br><b>Titik puncak:</b> (${f(xp)}, ${f(yp)}) &nbsp; <b>Nilai ${a>0?'minimum':'maksimum'}:</b> ${f(yp)}`;
+}
+
+/* ---------- Contoh Soal per Materi ---------- */
+const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a, pk=a=>a[ri(0,a.length-1)];
+const sn=n=>n<0?`-${-n}`:`+${n}`, cf=n=>n===1?'':n===-1?'-':String(n);
+const pl=(a,b,c)=>{let s=cf(a)+'x^2';if(b)s+=(b<0?'-':'+')+(Math.abs(b)===1?'':Math.abs(b))+'x';if(c)s+=(c<0?'-':'+')+Math.abs(c);return s};
+const xm=r=>r>0?`(x-${r})`:r<0?`(x+${-r})`:'x';
+const sol=h=>`<details style="margin-top:.5rem"><summary style="font-size:1rem">Lihat pembahasan</summary><div class="box">${h}</div></details>`;
+const dist=(lo,hi,nz)=>{let a,b;do{a=ri(lo,hi);b=ri(lo,hi)}while(a===b||(nz&&(!a||!b)));return [a,b].sort((x,y)=>x-y)};
+
+function gEks(){
+  const t=ri(0,2);
+  if(t===0){const a=pk([2,3,5]),m=ri(3,7),n=ri(2,6),p=ri(1,5),e=m+n-p;
+    return [R`Sederhanakan $\dfrac{${a}^{${m}}\cdot ${a}^{${n}}}{${a}^{${p}}}$ lalu tentukan nilainya.`,
+      R`Gunakan sifat perkalian dan pembagian: $ ${a}^{${m}+${n}-${p}}=${a}^{${e}}=${Math.pow(a,e)}$.`]}
+  if(t===1){const a=pk([2,3]),m=ri(2,3),n=ri(2,3),p=ri(1,4),e=m*n+p;
+    return [R`Tentukan nilai $(${a}^{${m}})^{${n}}\cdot ${a}^{${p}}$.`,
+      R`$(${a}^{${m}})^{${n}}=${a}^{${m*n}}$, kemudian $ ${a}^{${m*n}}\cdot ${a}^{${p}}=${a}^{${e}}=${Math.pow(a,e)}$.`]}
+  const [x,y]=pk([[2,3],[3,2],[4,3],[2,5],[3,4]]),n=ri(2,4);
+  return [R`Tentukan nilai $\left(\dfrac{${x}}{${y}}\right)^{-${n}}$.`,
+    R`Pangkat negatif membalik pecahan: $\left(\dfrac{${y}}{${x}}\right)^{${n}}=\dfrac{${Math.pow(y,n)}}{${Math.pow(x,n)}}$.`]
+}
+function gAkar(){
+  const t=ri(0,2);
+  if(t===0){const c=pk([2,3,5,6,7]),p=ri(2,5),q=ri(1,p-1),op=pk(['+','-']),r=op==='+'?p+q:p-q;
+    return [R`Sederhanakan $\sqrt{${p*p*c}}${op}\sqrt{${q*q*c}}$.`,
+      R`$\sqrt{${p*p*c}}=${p}\sqrt{${c}}$ dan $\sqrt{${q*q*c}}=${q}\sqrt{${c}}$, sehingga hasilnya $ ${r}\sqrt{${c}}$.`]}
+  if(t===1){const [b,a]=pick2([2,3,5,6,7,10]),m=ri(1,4),k=(a-b)*m,op=pk(['+','-']),o2=op==='+'?'-':'+',mm=m===1?'':m;
+    return [R`Rasionalkan penyebut $\dfrac{${k}}{\sqrt{${a}}${op}\sqrt{${b}}}$.`,
+      R`Kalikan dengan sekawan: $\dfrac{${k}(\sqrt{${a}}${o2}\sqrt{${b}})}{${a}-${b}}=\dfrac{${k}(\sqrt{${a}}${o2}\sqrt{${b}})}{${a-b}}=${m===1?'':mm}${m===1?'':'('}\sqrt{${a}}${o2}\sqrt{${b}}${m===1?'':')'}$.`]}
+  const b=pk([2,3,5,6,7]),m=ri(1,5);
+  return [R`Rasionalkan penyebut $\dfrac{${b*m}}{\sqrt{${b}}}$.`,
+    R`$\dfrac{${b*m}}{\sqrt{${b}}}\cdot\dfrac{\sqrt{${b}}}{\sqrt{${b}}}=\dfrac{${b*m}\sqrt{${b}}}{${b}}=${m===1?'':m}\sqrt{${b}}$.`]
+}
+function pick2(a){let i,j;do{i=ri(0,a.length-1);j=ri(0,a.length-1)}while(i===j);return [a[i],a[j]].sort((x,y)=>x-y)}
+function gFE(){
+  const A=pk([{t:'2',v:2},{t:'3',v:3},{t:'4',v:4},{t:'\\dfrac12',b:'\\left(\\dfrac12\\right)',v:.5},{t:'\\dfrac13',b:'\\left(\\dfrac13\\right)',v:1/3}]),k=pk([-3,-2,-1,1,2,3,4]),c=pk([-4,-3,-2,-1,1,2,3,4,5]);
+  const naik=(A.v>1)===(k>0),kk=k===1?'':k===-1?'-':k+'\\cdot ';
+  return [R`Diberikan $f(x)=${kk}${A.b||A.t}^{x}${c<0?'-':'+'}${Math.abs(c)}$. Tentukan asimtot datar, range, titik potong sumbu-$y$, dan sifat kemonotonannya.`,
+    R`Bentuk $f(x)=k\cdot a^x+c$ dengan $k=${k}$, $a=${A.t}$, $c=${c}$.<br>Asimtot datar: $y=${c}$.<br>Range: $y${k>0?'>':'<'}${c}$ (karena $k${k>0?'>':'<'}0$).<br>Titik potong sumbu-$y$: $f(0)=${k}+${c<0?'('+c+')':c}=${k+c}$, yaitu $(0,${k+c})$.<br>Karena $a${A.v>1?'>1':'<1'}$ dan $k${k>0?'>':'<'}0$, kurva monoton <b>${naik?'naik':'turun'}</b>.`]
+}
+const PEF=[R`a^{f(x)}=a^{p}`,R`a^{f(x)}=a^{g(x)}`,R`a^{f(x)}=b^{f(x)}`,R`h(x)^{f(x)}=h(x)^{g(x)}`,R`A\,(a^x)^2+B\,a^x+C=0`];
+function lin(p,q){let s=p===0?'':cf(p)+'x';if(q!==0||s==='')s+=s===''?String(q):sn(q);return s}
+const ct=n=>Math.abs(n)===1?'':Math.abs(n)+'\\cdot ';
+function gPE(n){
+  n=+n||ri(1,5);
+  const tg=PEF[n-1];
+  const hd=`<div style="color:var(--mut);font-size:.85rem;margin-bottom:.3rem"><b>Bentuk persamaan:</b> $${tg}$</div>`;
+  let q,s;
+  if(n===1){
+    let a,r,p,c;do{a=pk([2,3,5]);r=ri(2,4);p=ri(2,4);c=ri(-3,4)}while(c===0||r===c||(r-c)%p!==0);
+    q=R`Tentukan penyelesaian $${a}^{${lin(p,c)}}=${Math.pow(a,r)}$.`;
+    s=R`Samakan basis: $${Math.pow(a,r)}=${a}^{${r}}$, sehingga $${a}^{${lin(p,c)}}=${a}^{${r}}$.<br>Basis sama, maka $f(x)=p$: $${lin(p,c)}=${r}$, jadi $${cf(p)}x=${r-c}$ dan $x=${(r-c)/p}$.`;
+  }else if(n===2){
+    const a=pk([2,3,5]);
+    if(ri(0,1)===0){
+      let p1,p2,c1,c2,x;do{p1=ri(1,4);p2=ri(1,4);x=ri(-4,5);c1=ri(-5,5);c2=c1+(p1-p2)*x}while(p1===p2||Math.abs(c2)>9);
+      q=R`Tentukan penyelesaian $${a}^{${lin(p1,c1)}}=${a}^{${lin(p2,c2)}}$.`;
+      s=R`Basis sama, maka eksponennya disamakan: $${lin(p1,c1)}=${lin(p2,c2)}$.<br>$${cf(p1-p2)}x=${c2-c1}$ sehingga $x=${x}$.`;
+    }else{
+      const [r1,r2]=dist(-4,5),S=r1+r2,P=r1*r2;
+      q=R`Tentukan himpunan penyelesaian $${a}^{x^2}=${a}^{${lin(S,-P)}}$.`;
+      s=R`Basis sama, maka $x^2=${lin(S,-P)}$ atau $${pl(1,-S,P)}=0$.<br>Faktorkan: $ ${xm(r1)}${xm(r2)}=0$, sehingga $x=${r1}$ atau $x=${r2}$.`;
+    }
+  }else if(n===3){
+    const [a,b]=pk([[2,3],[3,5],[5,7],[2,7],[3,4]]);
+    if(ri(0,1)===0){
+      const p=ri(1,3),x=ri(-4,6),e=lin(p,-p*x);
+      q=R`Tentukan penyelesaian $${a}^{${e}}=${b}^{${e}}$.`;
+      s=R`Basis berbeda ($${a}\neq${b}$) dan kedua ruas sama, maka eksponennya harus nol: $${e}=0$.<br>$${cf(p)}x=${p*x}$ sehingga $x=${x}$.`;
+    }else{
+      const [r1,r2]=dist(-5,5),e=pl(1,-(r1+r2),r1*r2);
+      q=R`Tentukan himpunan penyelesaian $${a}^{${e}}=${b}^{${e}}$.`;
+      s=R`Basis berbeda, maka eksponen harus nol: $${e}=0$.<br>Faktorkan: $ ${xm(r1)}${xm(r2)}=0$, sehingga $x=${r1}$ atau $x=${r2}$.`;
+    }
+  }else if(n===4){
+    const k=ri(2,5),p=ri(-2,4),c=ri(-3,5),mp=new Map();
+    [['f(x)=g(x)',p-c],['h(x)=1',k+1],['h(x)=0',k],['h(x)=-1',k-1]].forEach(([l,x])=>{if(mp.has(x))mp.get(x).push(l);else mp.set(x,[l])});
+    const ok=[];let li='';
+    mp.forEach((labs,x)=>{
+      const h=x-k,F=x+p,G=2*x+c;
+      const v=h===0?(F>0&&G>0):Math.pow(h,F)===Math.pow(h,G);
+      const why=v?'':(h===0?' (basis 0 hanya sah untuk pangkat positif)':' (nilai kedua ruas tidak sama)');
+      if(v)ok.push(x);
+      li+=`<li>Dari $${labs.join('$ / $')}$: $x=${x}$ dengan $h=${h}$, $f=${F}$, $g=${G}$ &rarr; <b>${v?'memenuhi':'tidak memenuhi'}</b>${why}</li>`;
+    });
+    ok.sort((x,y)=>x-y);
+    q=R`Tentukan himpunan penyelesaian $(x-${k})^{${lin(1,p)}}=(x-${k})^{${lin(2,c)}}$.`;
+    s=R`Dengan $h(x)=x-${k}$, $f(x)=${lin(1,p)}$, $g(x)=${lin(2,c)}$, periksa empat kemungkinan:<ul style="list-style:disc;padding-left:1.3rem">${li}</ul>Himpunan penyelesaian: $\{${ok.join(', ')}\}$.`;
+  }else{
+    const a=pk([2,3]);
+    if(ri(0,1)===0){
+      const [u,v]=dist(0,3),y1=Math.pow(a,u),y2=Math.pow(a,v),B=-(y1+y2),C=y1*y2;
+      q=R`Tentukan himpunan penyelesaian $${a}^{2x}${sn(B)}\cdot ${a}^{x}${sn(C)}=0$.`;
+      s=R`Misalkan $y=${a}^x$ (dengan $y>0$): $y^2${B<0?'-':'+'}${Math.abs(B)===1?'':Math.abs(B)}y${sn(C)}=0$, yaitu $(y-${y1})(y-${y2})=0$.<br>$${a}^x=${y1}=${a}^{${u}}\Rightarrow x=${u}$ dan $${a}^x=${y2}=${a}^{${v}}\Rightarrow x=${v}$.<br>Himpunan penyelesaian: $\{${u},\ ${v}\}$.`;
+    }else{
+      const u=ri(0,3),y1=Math.pow(a,u);let m;do{m=ri(1,6)}while(m===y1);
+      const B=m-y1,C=-m*y1;
+      q=R`Tentukan himpunan penyelesaian $${a}^{2x}${B<0?'-':'+'}${ct(B)}${a}^{x}${sn(C)}=0$.`;
+      s=R`Misalkan $y=${a}^x$ (dengan $y>0$): $y^2${B<0?'-':'+'}${Math.abs(B)===1?'':Math.abs(B)}y${sn(C)}=0$, yaitu $(y-${y1})(y+${m})=0$.<br>$y=${y1}$ memenuhi, sehingga $${a}^x=${a}^{${u}}\Rightarrow x=${u}$.<br>$y=-${m}$ tidak memenuhi karena $${a}^x>0$.<br>Himpunan penyelesaian: $\{${u}\}$.`;
+    }
+  }
+  return [hd+q,s];
+}
+const PKM=[R`Pemfaktoran: $(x-x_1)(x-x_2)=0$`,R`Kuadrat sempurna: $(x+p)^2=q$`,R`Rumus ABC: $x=\dfrac{-b\pm\sqrt{D}}{2a}$`,R`Sifat akar (Vieta): $x_1+x_2$ dan $x_1\cdot x_2$`,R`Diskriminan: $D=b^2-4ac$`];
+const frc=(a,b)=>b===1?String(a):(a<0?'-':'')+R`\dfrac{${Math.abs(a)}}{${b}}`;
+const lf=(m,n)=>(m===1?'':m)+'x'+sn(n);
+const gc3=(a,b,c)=>gcd(gcd(a,b),c);
+const isSq=n=>Number.isInteger(Math.sqrt(n));
+function sq(n){let k=1,m=n;for(let f=2;f*f<=m;f++)while(m%(f*f)===0){m/=f*f;k*=f}return [k,m]}
+const rad=(k,m)=>(k>1?k:'')+R`\sqrt{${m}}`;
+function gPK(n){
+  n=+n||ri(1,5);let q,s,E,rt=[];
+  const nz=[-5,-4,-3,-2,-1,1,2,3,4,5];
+  if(n===1){
+    let m,p,nn,qq,a,b,c;
+    do{m=pk([1,1,2,3]);p=pk([1,1,2]);nn=pk(nz);qq=pk(nz);a=m*p;b=m*qq+nn*p;c=nn*qq}
+    while(gcd(m,nn)!==1||gcd(p,qq)!==1||gc3(a,b,c)!==1||b===0||nn*p===m*qq);
+    const s1=m*qq,t1=nn*p;E=[a,b,c];rt=[-nn/m,-qq/p];
+    q=R`Tentukan akar-akar persamaan $${pl(a,b,c)}=0$ dengan pemfaktoran.`;
+    if(a===1)s=R`Cari dua bilangan yang jumlahnya $${b}$ dan hasil kalinya $${c}$, yaitu $${nn}$ dan $${qq}$.<br>Faktorkan: $ (${lf(1,nn)})(${lf(1,qq)})=0$, sehingga $x=${-nn}$ atau $x=${-qq}$.`;
+    else s=R`Cari dua bilangan yang jumlahnya $b=${b}$ dan hasil kalinya $a\cdot c=${a*c}$, yaitu $${s1}$ dan $${t1}$.<br>Pecah suku tengah: $${a}x^2${sn(s1)}x${sn(t1)}x${sn(c)}=0$.<br>Faktorkan per kelompok: $${m===1?'':m}x(${lf(p,qq)})${nn<0?'-':'+'}${co1(nn)}(${lf(p,qq)})=0$, yaitu $ (${lf(m,nn)})(${lf(p,qq)})=0$.<br>Jadi $x=${frc(-nn,m)}$ atau $x=${frc(-qq,p)}$.`;
+  }else if(n===2){
+    if(ri(0,1)===0){
+      const a=pk([1,2]);let r1,r2;do{[r1,r2]=dist(-7,7)}while((r1+r2)%2!==0||r1+r2===0);
+      const b0=-(r1+r2),c0=r1*r2,P=b0/2,Q=P*P-c0,rq=Math.sqrt(Q);E=[a,a*b0,a*c0];rt=[r1,r2];
+      q=R`Tentukan akar-akar persamaan $${pl(a,a*b0,a*c0)}=0$ dengan melengkapkan kuadrat sempurna.`;
+      s=(a>1?R`Bagi kedua ruas dengan ${a}: $${pl(1,b0,c0)}=0$.<br>`:'')+R`Pindahkan konstanta: $x^2${sn(b0)}x=${-c0}$.<br>Tambahkan $\left(\dfrac b2\right)^2=(${P})^2=${P*P}$ pada kedua ruas: $x^2${sn(b0)}x+${P*P}=${-c0}+${P*P}$.<br>Diperoleh $(x${sn(P)})^2=${Q}$, sehingga $x${sn(P)}=\pm${rq}$.<br>Jadi $x=${-P}\pm${rq}$, yaitu $x=${r1}$ atau $x=${r2}$.`;
+    }else{
+      let P,Q;do{P=pk([-4,-3,-2,-1,1,2,3,4]);Q=ri(2,12)}while(isSq(Q));
+      const b0=2*P,c0=P*P-Q,[k,m]=sq(Q);E=[1,b0,c0];rt=[-P+Math.sqrt(Q),-P-Math.sqrt(Q)];
+      q=R`Tentukan akar-akar persamaan $${pl(1,b0,c0)}=0$ dengan melengkapkan kuadrat sempurna.`;
+      s=R`Pindahkan konstanta: $x^2${sn(b0)}x=${-c0}$.<br>Tambahkan $\left(\dfrac b2\right)^2=(${P})^2=${P*P}$ pada kedua ruas: $x^2${sn(b0)}x+${P*P}=${-c0}+${P*P}$.<br>Diperoleh $(x${sn(P)})^2=${Q}$, sehingga $x${sn(P)}=\pm\sqrt{${Q}}${k>1?R`=\pm${rad(k,m)}`:''}$.<br>Jadi $x=${-P}\pm${rad(k,m)}$.`;
+    }
+  }else if(n===3){
+    const t=ri(0,2);
+    if(t===0){
+      const a=ri(2,3),[r1,r2]=dist(-4,4,true),b=-a*(r1+r2),c=a*r1*r2,D=b*b-4*a*c;E=[a,b,c];rt=[r1,r2];
+      q=R`Tentukan akar-akar persamaan $${pl(a,b,c)}=0$ dengan rumus ABC.`;
+      s=R`Gunakan $x=\dfrac{-b\pm\sqrt{b^2-4ac}}{2a}$ dengan $a=${a}$, $b=${b}$, $c=${c}$.<br>$D=b^2-4ac=(${b})^2-4(${a})(${c})=${D}$, sehingga $\sqrt D=${a*(r2-r1)}$.<br>$x=\dfrac{${-b}\pm${a*(r2-r1)}}{${2*a}}$, maka $x=${r1}$ atau $x=${r2}$.`;
+    }else if(t===1){
+      let a,b,c,D;do{a=ri(1,3);b=ri(-6,6);c=ri(-6,6);D=b*b-4*a*c}while(D<=0||isSq(D));
+      const [k0,m]=sq(D);let nb=-b,kk=k0,den=2*a;const g=gcd(gcd(Math.abs(nb),kk),den);nb/=g;kk/=g;den/=g;
+      E=[a,b,c];rt=[(nb+kk*Math.sqrt(m))/den,(nb-kk*Math.sqrt(m))/den];
+      q=R`Tentukan akar-akar persamaan $${pl(a,b,c)}=0$ dengan rumus ABC.`;
+      s=R`Gunakan $x=\dfrac{-b\pm\sqrt{b^2-4ac}}{2a}$ dengan $a=${a}$, $b=${b}$, $c=${c}$.<br>$D=(${b})^2-4(${a})(${c})=${D}$ dan $\sqrt{${D}}=${rad(k0,m)}$.<br>$x=\dfrac{${-b}\pm${rad(k0,m)}}{${2*a}}${g>1?R`=${den===1?`${nb===0?'':nb}\pm${rad(kk,m)}`:R`\dfrac{${nb===0?'':nb}\pm${rad(kk,m)}}{${den}}`}`:''}$.`;
+    }else{
+      let a,b,c,D;do{a=ri(1,3);b=ri(-4,4);c=ri(1,6);D=b*b-4*a*c}while(D>=0);E=[a,b,c];rt=[];
+      q=R`Tentukan akar-akar real persamaan $${pl(a,b,c)}=0$ (jika ada) dengan rumus ABC.`;
+      s=R`$a=${a}$, $b=${b}$, $c=${c}$. $D=b^2-4ac=(${b})^2-4(${a})(${c})=${D}$.<br>Karena $D&lt;0$, persamaan <b>tidak mempunyai akar real</b>.`;
+    }
+  }else if(n===4){
+    const [r1,r2]=dist(-7,7,true),b=-(r1+r2),c=r1*r2,S=r1+r2,D=b*b-4*c;E=[1,b,c];rt=[r1,r2];
+    q=R`Tanpa mencari akarnya, tentukan $x_1+x_2$, $x_1\cdot x_2$, $x_1^2+x_2^2$, dan $|x_1-x_2|$ dari $${pl(1,b,c)}=0$.`;
+    s=R`$x_1+x_2=-\dfrac ba=${S}$ dan $x_1\cdot x_2=\dfrac ca=${c}$.<br>$x_1^2+x_2^2=(x_1+x_2)^2-2x_1x_2=${S*S}-2(${c})=${S*S-2*c}$.<br>$|x_1-x_2|=\dfrac{\sqrt D}{|a|}=\sqrt{${D}}=${Math.abs(r1-r2)}$.`;
+  }else{
+    const t=ri(0,2);
+    if(t===0){
+      const b=pk([-8,-6,-4,4,6,8,10]);
+      q=R`Persamaan $x^2${sn(b)}x+k=0$ mempunyai dua akar real kembar. Tentukan nilai $k$.`;
+      s=R`Akar kembar berarti $D=0$: $(${b})^2-4(1)k=0$ sehingga $4k=${b*b}$ dan $k=${b*b/4}$.`;
+    }else if(t===1){
+      const kind=ri(0,2);let a,b,c;
+      if(kind===0){const [r1,r2]=dist(-5,5);a=pk([1,2]);b=-a*(r1+r2);c=a*r1*r2}
+      else if(kind===1){const r=pk([-4,-3,-2,-1,1,2,3,4]);a=pk([1,2]);b=-2*a*r;c=a*r*r}
+      else{do{a=ri(1,3);b=ri(-4,4);c=ri(1,6)}while(b*b-4*a*c>=0)}
+      const D=b*b-4*a*c;
+      q=R`Tanpa menghitung akarnya, tentukan jenis akar-akar persamaan $${pl(a,b,c)}=0$.`;
+      s=R`$D=b^2-4ac=(${b})^2-4(${a})(${c})=${D}$.<br>${D>0?R`Karena $D&gt;0$, persamaan mempunyai <b>dua akar real berbeda</b>.`:D===0?R`Karena $D=0$, persamaan mempunyai <b>dua akar real kembar</b>.`:R`Karena $D&lt;0$, persamaan <b>tidak mempunyai akar real</b>.`}`;
+    }else{
+      const b=pk([-8,-6,-4,-2,2,4,6,8]);
+      q=R`Tentukan batas nilai $k$ agar persamaan $x^2${sn(b)}x+k=0$ mempunyai dua akar real berbeda.`;
+      s=R`Syaratnya $D&gt;0$: $(${b})^2-4(1)k&gt;0$, yaitu $${b*b}-4k&gt;0$.<br>$4k&lt;${b*b}$ sehingga $k&lt;${b*b/4}$.`;
+    }
+  }
+  return [q,s,{E,rt}];
+}
+function gFK(){
+  if(ri(0,1)===0){const a=pk([-3,-2,-1,1,2,3]),p=ri(-4,4),q=ri(-6,6),b=-2*a*p,c=a*p*p+q,D=b*b-4*a*c;
+    return [R`Diketahui $f(x)=${pl(a,b,c)}$. Tentukan arah buka kurva, sumbu simetri, titik puncak, dan titik potong sumbu-$y$.`,
+      R`Karena $a=${a}$, kurva membuka ke <b>${a>0?'atas':'bawah'}</b>.<br>Sumbu simetri: $x=-\dfrac{b}{2a}=-\dfrac{${b}}{${2*a}}=${p}$.<br>$D=b^2-4ac=${D}$, nilai ${a>0?'minimum':'maksimum'}: $y=-\dfrac{D}{4a}=${q}$.<br>Titik puncak: $(${p},${q})$. Titik potong sumbu-$y$: $(0,${c})$.`]}
+  const a=pk([-2,-1,1,2]),[r1,r2]=dist(-5,5),b=-a*(r1+r2),c=a*r1*r2,xp=(r1+r2)/2,yp=a*(xp-r1)*(xp-r2);
+  return [R`Diketahui $f(x)=${pl(a,b,c)}$. Tentukan titik potong sumbu-$x$ dan titik puncaknya.`,
+    R`Faktorkan: $f(x)=${cf(a)}${xm(r1)}${xm(r2)}$, jadi memotong sumbu-$x$ di $(${r1},0)$ dan $(${r2},0)$.<br>Sumbu simetri: $x=\dfrac{${r1}+${r2<0?'('+r2+')':r2}}{2}=${f(xp)}$, dan $f(${f(xp)})=${f(yp)}$.<br>Titik puncak: $(${f(xp)},\ ${f(yp)})$.`]
+}
+const SFRM=[R`$y=a(x-x_1)(x-x_2)$ untuk titik potong sumbu-$x$ dan satu titik lain`,R`$y=a(x-p)^2+q$ untuk titik puncak dan satu titik lain`,R`$y=ax^2+bx+c$ untuk tiga titik sembarang`];
+const fq=(a,p,q0)=>{const u=cf(a)+xm(p)+'^2'+sn(q0),v=pl(a,-2*a*p,a*p*p+q0);return u===v?u:u+'='+v};
+const cfa=S=>S===1?'a':S===-1?'-a':S+'a';
+const eqT=(x,y)=>(x===0?'c':(x*x===1?'a':x*x+'a')+(x<0?'-':'+')+co1(x)+'b+c')+'='+y;
+function genThree(){
+  let a,b,c,xs,ys;
+  do{a=pk([-2,-1,1,2]);b=ri(-4,4);c=ri(-5,5);xs=[ri(-3,4),ri(-3,4),ri(-3,4)].sort((u,v)=>u-v);ys=xs.map(x=>a*x*x+b*x+c)}
+  while(new Set(xs).size<3||xs[2]-xs[0]<3||xs[2]-xs[0]>6||Math.max(...ys.map(Math.abs))>12||Math.abs(c-b*b/(4*a))>12);
+  return {E:[a,b,c],pts:xs.map((x,i)=>({x,y:ys[i],l:1})),vtx:{x:-b/(2*a),y:c-b*b/(4*a)}};
+}
+function solveThree(g){
+  const [p1,p2,p3]=g.pts,[a,b,c]=g.E,w=v=>v<0?'('+v+')':v;
+  const m1=(p2.y-p1.y)/(p2.x-p1.x),m2=(p3.y-p2.y)/(p3.x-p2.x),S12=p1.x+p2.x,S23=p2.x+p3.x,lt=S=>S===0?'b':cfa(S)+'+b';
+  return R`Misalkan $y=ax^2+bx+c$. Substitusi ketiga titik:<br>$${eqT(p1.x,p1.y)}$ &nbsp;(1)<br>$${eqT(p2.x,p2.y)}$ &nbsp;(2)<br>$${eqT(p3.x,p3.y)}$ &nbsp;(3)<br>(2) &minus; (1), lalu bagi $${p2.x-p1.x}$: $${lt(S12)}=${m1}$.<br>(3) &minus; (2), lalu bagi $${p3.x-p2.x}$: $${lt(S23)}=${m2}$.<br>Kurangkan kedua hasil: $${cfa(p1.x-p3.x)}=${m1-m2}$ sehingga $a=${a}$.<br>Maka $b=${m1}-${w(a)}(${S12})=${b}$ dan $c=${p1.y}-${w(a)}(${p1.x*p1.x})-${w(b)}(${p1.x})=${c}$.<br>Jadi $f(x)=${pl(a,b,c)}$.`;
+}
+function gSF(n){
+  const t=(+n||ri(1,3))-1;
+  if(t===0){const [r1,r2]=dist(-4,4),a=pk([-2,-1,1,2]);let s;do{s=ri(-3,5)}while(s===r1||s===r2||Math.abs(a*(s-r1)*(s-r2))>15);
+    const ys=a*(s-r1)*(s-r2),pr=(s-r1)*(s-r2);
+    return [R`Grafik fungsi kuadrat memotong sumbu-$x$ di $(${r1},0)$ dan $(${r2},0)$ serta melalui titik $(${s},${ys})$. Tentukan fungsinya.`,
+      R`Diketahui titik potong sumbu-$x$, gunakan $y=a(x-x_1)(x-x_2)$: $y=a${xm(r1)}${xm(r2)}$.<br>Substitusi $(${s},${ys})$: $${ys}=a(${s-r1})(${s-r2})=${pr}a$, sehingga $a=${a}$.<br>Jadi $f(x)=${pl(a,-a*(r1+r2),a*r1*r2)}$.`]}
+  if(t===1){const a=pk([-2,-1,1,2]),p=ri(-3,3),q0=ri(-5,5),s=p+pk([-2,-1,1,2]),ys=a*(s-p)*(s-p)+q0;
+    return [R`Grafik fungsi kuadrat mempunyai titik puncak $(${p},${q0})$ dan melalui titik $(${s},${ys})$. Tentukan fungsinya.`,
+      R`Diketahui titik puncak, gunakan $y=a(x-p)^2+q$: $y=a${xm(p)}^2${sn(q0)}$.<br>Substitusi $(${s},${ys})$: $${ys}=a(${s-p})^2${sn(q0)}$, maka $${ys-q0}=${(s-p)*(s-p)}a$ sehingga $a=${a}$.<br>Jadi $f(x)=${fq(a,p,q0)}$.`]}
+  const g=genThree(),P=g.pts;
+  return [R`Grafik fungsi kuadrat melalui tiga titik $(${P[0].x},${P[0].y})$, $(${P[1].x},${P[1].y})$, dan $(${P[2].x},${P[2].y})$. Tentukan fungsinya.`,solveThree(g)];
+}
+const PKBF=[R`Akar-akar $x_1$ dan $x_2$ diketahui`,R`Akar-akar $\alpha+k$ dan $\beta+k$`,R`Akar-akar $p\alpha$ dan $p\beta$`,R`Akar-akar $\dfrac1\alpha$ dan $\dfrac1\beta$`,R`Akar-akar $-\alpha$ dan $-\beta$`,R`Akar-akar $\alpha^2$ dan $\beta^2$`];
+const co1=n=>Math.abs(n)===1?'':String(Math.abs(n));
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a};
+function gPKB(n){
+  n=+n||ri(1,6);let q,s,y,E;
+  if(n===1){
+    if(ri(0,1)===0){
+      const [r1,r2]=dist(-6,6,true),S=r1+r2,P=r1*r2,w=v=>v<0?'('+v+')':v;
+      q=R`Susunlah persamaan kuadrat yang akar-akarnya $x_1=${r1}$ dan $x_2=${r2}$.`;
+      s=R`$x_1+x_2=${r1}+${w(r2)}=${S}$ dan $x_1\cdot x_2=${w(r1)}\cdot${w(r2)}=${P}$.<br>Persamaannya $x^2-(x_1+x_2)x+x_1x_2=0$, yaitu $x^2-(${S})x+(${P})=0$ atau $${pl(1,-S,P)}=0$.`;
+      y=[r1,r2];E=[1,-S,P];
+    }else{
+      let r1,pn,qd;do{r1=pk([-4,-3,-2,-1,1,2,3,4]);qd=ri(2,4);pn=pk([-5,-3,-2,-1,1,2,3,5])}while(gcd(pn,qd)!==1);
+      const B=-(pn+qd*r1),C=r1*pn;
+      q=R`Susunlah persamaan kuadrat yang akar-akarnya $x_1=${r1}$ dan $x_2=\dfrac{${pn}}{${qd}}$ dengan koefisien bilangan bulat.`;
+      s=R`Akar $x_2=\dfrac{${pn}}{${qd}}$ berarti faktornya $(${qd}x${sn(-pn)})$.<br>$ ${xm(r1)}(${qd}x${sn(-pn)})=0$, jika dijabarkan diperoleh $${pl(qd,B,C)}=0$.`;
+      y=[r1,pn/qd];E=[qd,B,C];
+    }
+  }else{
+    const a=pk([1,1,2]),[al,be]=dist(n===6?-4:-5,n===6?4:6,true),A=al+be,B=al*be,b=-a*A,c=a*B;
+    const pre=R`Dari persamaan lama: $\alpha+\beta=-\dfrac ba=-\dfrac{${b}}{${a}}=${A}$ dan $\alpha\beta=\dfrac ca=\dfrac{${c}}{${a}}=${B}$.<br>`;
+    const head=R`Persamaan kuadrat $${pl(a,b,c)}=0$ mempunyai akar-akar $\alpha$ dan $\beta$. Susunlah persamaan kuadrat baru yang akar-akarnya `;
+    let S2,P2,mid,res;
+    if(n===2){
+      const k=pk([-4,-3,-2,-1,1,2,3,4]);S2=A+2*k;P2=B+k*A+k*k;y=[al+k,be+k];
+      q=head+R`$\alpha${sn(k)}$ dan $\beta${sn(k)}$.`;
+      mid=R`Jumlah akar baru: $(\alpha${sn(k)})+(\beta${sn(k)})=(\alpha+\beta)${sn(2*k)}=${A}${sn(2*k)}=${S2}$.<br>Hasil kali akar baru: $(\alpha${sn(k)})(\beta${sn(k)})=\alpha\beta${k<0?'-':'+'}${co1(k)}(\alpha+\beta)+${k*k}=${B}${k<0?'-':'+'}${co1(k)}(${A})+${k*k}=${P2}$.<br>`;
+      E=[1,-S2,P2];
+    }else if(n===3){
+      const p=pk([2,3,-2,-3]);S2=p*A;P2=p*p*B;y=[p*al,p*be];
+      q=head+R`$${p}\alpha$ dan $${p}\beta$.`;
+      mid=R`Jumlah akar baru: $(${p}\alpha)+(${p}\beta)=${p}(\alpha+\beta)=${p}(${A})=${S2}$.<br>Hasil kali akar baru: $(${p}\alpha)(${p}\beta)=${p*p}\alpha\beta=${p*p}(${B})=${P2}$.<br>`;
+      E=[1,-S2,P2];
+    }else if(n===4){
+      const sg=B<0?-1:1;y=[1/al,1/be];
+      q=head+R`$\dfrac1\alpha$ dan $\dfrac1\beta$.`;
+      mid=R`Jumlah akar baru: $\dfrac1\alpha+\dfrac1\beta=\dfrac{\alpha+\beta}{\alpha\beta}=\dfrac{${A}}{${B}}$.<br>Hasil kali akar baru: $\dfrac1\alpha\cdot\dfrac1\beta=\dfrac1{\alpha\beta}=\dfrac1{${B}}$.<br>Persamaan: $x^2-\dfrac{${A}}{${B}}x+\dfrac1{${B}}=0$. Kalikan dengan $${B}$ agar koefisiennya bulat.<br>`;
+      E=[B*sg,-A*sg,sg];
+    }else if(n===5){
+      S2=-A;P2=B;y=[-al,-be];
+      q=head+R`$-\alpha$ dan $-\beta$.`;
+      mid=R`Jumlah akar baru: $-\alpha-\beta=-(\alpha+\beta)=${S2}$.<br>Hasil kali akar baru: $(-\alpha)(-\beta)=\alpha\beta=${P2}$.<br>`;
+      E=[1,-S2,P2];
+    }else{
+      S2=A*A-2*B;P2=B*B;y=[al*al,be*be];
+      q=head+R`$\alpha^2$ dan $\beta^2$.`;
+      mid=R`Jumlah akar baru: $\alpha^2+\beta^2=(\alpha+\beta)^2-2\alpha\beta=(${A})^2-2(${B})=${S2}$.<br>Hasil kali akar baru: $\alpha^2\cdot\beta^2=(\alpha\beta)^2=(${B})^2=${P2}$.<br>`;
+      E=[1,-S2,P2];
+    }
+    res=n===4?R`Jadi persamaan barunya $${pl(E[0],E[1],E[2])}=0$.`:R`Persamaan baru: $x^2-(${S2})x+(${P2})=0$, yaitu $${pl(1,-S2,P2)}=0$.`;
+    s=pre+mid+res;
+  }
+  return [q,s,{y,E}];
+}
+const r2=v=>+v.toFixed(2),mn=t=>String(t).replace(/-/g,'\u2212');
+function svgG(fn,pts){
+  const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);
+  const x0=Math.floor(Math.min(...xs,0)-1),x1=Math.ceil(Math.max(...xs,0)+1),y0=Math.floor(Math.min(...ys,0)-1),y1=Math.ceil(Math.max(...ys,0)+1);
+  const dx=x1-x0,dy=y1-y0,s=Math.min(420/dx,340/dy,42),W=r2(dx*s),H=r2(dy*s),X=x=>r2((x-x0)*s),Y=y=>r2((y1-y)*s);
+  const st=Math.max(1,Math.ceil(Math.max(dx,dy)/14));let g='';
+  for(let i=x0;i<=x1;i++)g+=`<line x1="${X(i)}" y1="0" x2="${X(i)}" y2="${H}" style="stroke:var(--line)" stroke-width="1"/>`;
+  for(let j=y0;j<=y1;j++)g+=`<line x1="0" y1="${Y(j)}" x2="${W}" y2="${Y(j)}" style="stroke:var(--line)" stroke-width="1"/>`;
+  g+=`<line x1="0" y1="${Y(0)}" x2="${W}" y2="${Y(0)}" style="stroke:var(--ink)" stroke-width="1.6"/><line x1="${X(0)}" y1="0" x2="${X(0)}" y2="${H}" style="stroke:var(--ink)" stroke-width="1.6"/>`;
+  const tk='font-size="10" style="fill:var(--mut)"';
+  for(let i=x0;i<=x1;i++)if(i!==0&&i%st===0)g+=`<text x="${X(i)}" y="${Y(0)+12}" text-anchor="middle" ${tk}>${mn(i)}</text>`;
+  for(let j=y0;j<=y1;j++)if(j!==0&&j%st===0)g+=`<text x="${X(0)-4}" y="${Y(j)+3}" text-anchor="end" ${tk}>${mn(j)}</text>`;
+  g+=`<text x="${W-4}" y="${Y(0)-5}" text-anchor="end" font-size="12" font-style="italic" style="fill:var(--ink)">x</text><text x="${X(0)+6}" y="11" font-size="12" font-style="italic" style="fill:var(--ink)">y</text>`;
+  let d='',pen=false;
+  for(let x=x0;x<=x1+1e-9;x+=0.05){const y=fn(x);if(y>=y0&&y<=y1){d+=(pen?'L':'M')+X(x)+' '+Y(y);pen=true}else pen=false}
+  g+=`<path d="${d}" fill="none" stroke-width="3" style="stroke:var(--acc2)"/>`;
+  pts.filter(p=>p.l).forEach(p=>{
+    const px=X(p.x),py=Y(p.y),left=px>W-70,down=py<16;
+    g+=`<circle cx="${px}" cy="${py}" r="4.5" style="fill:var(--acc)"/><text x="${px+(left?-7:7)}" y="${py+(down?15:-7)}" text-anchor="${left?'end':'start'}" font-size="11" font-weight="600" style="fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:3px">${mn('('+p.x+', '+p.y+')')}</text>`;
+  });
+  const pd=18;
+  return `<svg viewBox="0 0 ${r2(W+2*pd)} ${r2(H+2*pd)}" role="img" aria-label="Grafik fungsi kuadrat" style="display:block;margin:.6rem auto;width:100%;max-width:${Math.round(W+2*pd)}px;background:var(--panel);border:1px solid var(--line);border-radius:10px"><g transform="translate(${pd},${pd})">${g}</g></svg>`;
+}
+function gSFG(n){
+  n=+n||ri(1,3);let q,s,E,pts;
+  const ask=R`Perhatikan grafik fungsi kuadrat berikut. Tentukan persamaan fungsi kuadratnya.`;
+  if(n===1){
+    let a,r1,r2,t,yt;do{a=pk([-2,-1,1,2]);[r1,r2]=dist(-4,4);t=ri(-4,5);yt=a*(t-r1)*(t-r2)}while(r2-r1>(Math.abs(a)===2?4:6)||t===r1||t===r2||Math.abs(yt)>12);
+    E=[a,-a*(r1+r2),a*r1*r2];const pr=(t-r1)*(t-r2);
+    pts=[{x:r1,y:0,l:1},{x:r2,y:0,l:1},{x:t,y:yt,l:1},{x:(r1+r2)/2,y:-a*(r2-r1)*(r2-r1)/4}];
+    s=R`Dari grafik, kurva memotong sumbu-$x$ di $(${r1},0)$ dan $(${r2},0)$, serta melalui $(${t},${yt})$.<br>Karena titik potong sumbu-$x$ diketahui, gunakan $y=a(x-x_1)(x-x_2)$, yaitu $y=a${xm(r1)}${xm(r2)}$.<br>Substitusi $(${t},${yt})$: $${yt}=a(${t-r1})(${t-r2})=${pr}a$, sehingga $a=${a}$.<br>Jadi $f(x)=${cf(a)}${xm(r1)}${xm(r2)}=${pl(E[0],E[1],E[2])}$.`;
+  }else if(n===2){
+    const a=pk([-2,-1,1,2]),p=ri(-3,3),q0=ri(-5,5),t=p+pk([-2,-1,1,2]),yt=a*(t-p)*(t-p)+q0;
+    E=[a,-2*a*p,a*p*p+q0];
+    pts=[{x:p,y:q0,l:1},{x:t,y:yt,l:1}];
+    s=R`Dari grafik, titik puncaknya $(${p},${q0})$ dan kurva melalui $(${t},${yt})$.<br>Karena titik puncak diketahui, gunakan $y=a(x-p)^2+q$, yaitu $y=a${xm(p)}^2${sn(q0)}$.<br>Substitusi $(${t},${yt})$: $${yt}=a(${t-p})^2${sn(q0)}$, maka $${yt-q0}=${(t-p)*(t-p)}a$ sehingga $a=${a}$.<br>Jadi $f(x)=${fq(a,p,q0)}$.`;
+  }else{
+    const g=genThree();E=g.E;pts=g.pts.concat([g.vtx]);s=solveThree(g);
+  }
+  q=ask+svgG(x=>E[0]*x*x+E[1]*x+E[2],pts);
+  return [q,s,{E,pts}];
+}
+const APPF=[R`Waktu penggandaan: $N=N_0\cdot a^{t/T}$`,R`Pertumbuhan persentase: $N=N_0(1+r)^t$`,R`Waktu paruh: $N=N_0\left(\dfrac12\right)^{t/T}$`,R`Peluruhan persentase: $N=N_0(1-r)^t$`,R`Bunga majemuk: $M=M_0(1+i)^n$`,R`Menentukan waktu (persamaan eksponen)`];
+const nf=v=>String(v).replace(/\B(?=(\d{3})+(?!\d))/g,'.'),dm=x=>String(+(+x).toFixed(6)).replace('.','{,}');
+function gApp(n){
+  n=+n||ri(1,6);let q,s,v,fv;
+  if(n===1){
+    const o=pk([['bakteri','jam'],['sel kanker di laboratorium','hari'],['koloni jamur','hari']]),N0=pk([50,100,200,500]),T=pk([2,3,4]),k=ri(2,4),a=pk([2,3]),t=k*T;
+    v=N0*Math.pow(a,k);fv=N0*Math.pow(a,t/T);
+    q=`Jumlah ${o[0]} mula-mula ${N0}. Jumlahnya menjadi ${a===2?'dua':'tiga'} kali lipat setiap ${T} ${o[1]}. Berapa jumlahnya setelah ${t} ${o[1]}?`;
+    s=R`Gunakan $N=N_0\cdot a^{t/T}$ dengan $N_0=${N0}$, $a=${a}$, $T=${T}$, dan $t=${t}$.<br>$N=${N0}\cdot${a}^{${t}/${T}}=${N0}\cdot${a}^{${k}}=${N0}\cdot${Math.pow(a,k)}=${nf(v)}$.<br>Jadi jumlahnya ${nf(v)}.`;
+  }else if(n===2){
+    const N0=pk([1000,2000,5000,10000]),r=pk([10,20,50]),t=ri(2,3);
+    v=N0*Math.pow(100+r,t)/Math.pow(100,t);fv=N0*Math.pow(1+r/100,t);
+    q=`Jumlah penduduk suatu desa ${nf(N0)} jiwa dan bertambah ${r}% setiap tahun. Berapa jumlah penduduk setelah ${t} tahun?`;
+    s=R`Gunakan $N=N_0(1+r)^t$ dengan $N_0=${nf(N0)}$, $r=${r}\%=${dm(r/100)}$, dan $t=${t}$.<br>$N=${nf(N0)}(1+${dm(r/100)})^{${t}}=${nf(N0)}(${dm((100+r)/100)})^{${t}}=${nf(N0)}\cdot${dm(Math.pow((100+r)/100,t))}=${nf(v)}$.<br>Jadi jumlah penduduk menjadi ${nf(v)} jiwa.`;
+  }else if(n===3){
+    const k=ri(2,4),m=pk([5,10,25]),M0=m*Math.pow(2,k),T=pk([2,3,5,10]),t=k*T,c=pk([['zat radioaktif','hari'],['isotop','tahun']]);
+    v=M0/Math.pow(2,k);fv=M0*Math.pow(.5,t/T);
+    q=`Massa awal suatu ${c[0]} adalah ${M0} gram dengan waktu paruh ${T} ${c[1]}. Berapa gram massa yang tersisa setelah ${t} ${c[1]}?`;
+    s=R`Gunakan $N=N_0\left(\dfrac12\right)^{t/T}$ dengan $N_0=${M0}$, $T=${T}$, dan $t=${t}$.<br>$N=${M0}\left(\dfrac12\right)^{${t}/${T}}=${M0}\left(\dfrac12\right)^{${k}}=\dfrac{${M0}}{${Math.pow(2,k)}}=${v}$.<br>Jadi massa yang tersisa ${v} gram.`;
+  }else if(n===4){
+    const V0=pk([5,10,20,40])*1000000,r=pk([10,20]),t=ri(2,3);
+    v=V0*Math.pow(100-r,t)/Math.pow(100,t);fv=V0*Math.pow(1-r/100,t);
+    q=`Harga sebuah mesin Rp${nf(V0)} dan menyusut ${r}% setiap tahun. Berapa nilai mesin setelah ${t} tahun?`;
+    s=R`Gunakan $N=N_0(1-r)^t$ dengan $N_0=${nf(V0)}$, $r=${r}\%=${dm(r/100)}$, dan $t=${t}$.<br>$N=${nf(V0)}(1-${dm(r/100)})^{${t}}=${nf(V0)}(${dm((100-r)/100)})^{${t}}=${nf(V0)}\cdot${dm(Math.pow((100-r)/100,t))}=${nf(v)}$.<br>Jadi nilai mesin menjadi Rp${nf(v)}.`;
+  }else if(n===5){
+    const M0=pk([1,2,5,10])*1000000,i=pk([5,10]),nn=ri(2,3);
+    v=M0*Math.pow(100+i,nn)/Math.pow(100,nn);fv=M0*Math.pow(1+i/100,nn);
+    q=`Rina menabung Rp${nf(M0)} dengan bunga majemuk ${i}% per tahun. Berapa jumlah tabungannya setelah ${nn} tahun?`;
+    s=R`Gunakan $M=M_0(1+i)^n$ dengan $M_0=${nf(M0)}$, $i=${i}\%=${dm(i/100)}$, dan $n=${nn}$.<br>$M=${nf(M0)}(1+${dm(i/100)})^{${nn}}=${nf(M0)}(${dm((100+i)/100)})^{${nn}}=${nf(M0)}\cdot${dm(Math.pow((100+i)/100,nn))}=${nf(v)}$.<br>Jadi jumlah tabungan menjadi Rp${nf(v)}.`;
+  }else if(ri(0,1)===0){
+    const N0=pk([100,200,500]),T=pk([2,3,4]),k=ri(2,5),Nt=N0*Math.pow(2,k);v=k*T;fv=v;
+    q=`Populasi bakteri mula-mula ${N0} dan menjadi dua kali lipat setiap ${T} jam. Setelah berapa jam populasinya menjadi ${nf(Nt)}?`;
+    s=R`$N=N_0\cdot2^{t/T}$ sehingga $${N0}\cdot2^{t/${T}}=${nf(Nt)}$.<br>$2^{t/${T}}=\dfrac{${nf(Nt)}}{${N0}}=${Math.pow(2,k)}=2^{${k}}$.<br>Basis sama, maka $\dfrac{t}{${T}}=${k}$ sehingga $t=${v}$ jam.`;
+  }else{
+    const k=ri(2,4),M0=pk([5,10,25])*Math.pow(2,k),T=pk([2,3,5]);v=k*T;fv=v;
+    q=`Massa awal suatu zat ${M0} gram dengan waktu paruh ${T} hari. Setelah berapa hari massanya tersisa ${M0/Math.pow(2,k)} gram?`;
+    s=R`$${M0}\left(\dfrac12\right)^{t/${T}}=${M0/Math.pow(2,k)}$ sehingga $\left(\dfrac12\right)^{t/${T}}=\dfrac{1}{${Math.pow(2,k)}}=\left(\dfrac12\right)^{${k}}$.<br>Basis sama, maka $\dfrac{t}{${T}}=${k}$ sehingga $t=${v}$ hari.`;
+  }
+  return [q,s,{v,fv}];
+}
+const EXG={'s-eks':gEks,'s-akar':gAkar,'s-fe':gFE,'s-pe':gPE,'s-pk':gPK,'s-fk':gFK,'s-sf':gSF};
+function mkEx(id,g,cfg){
+  cfg=cfg||{};const opts=cfg.opts;
+  const d=document.createElement('details');d.className='card';d.open=true;
+  d.innerHTML=`<summary>${cfg.title||'Contoh Soal'}</summary>`+(opts?`<div class="dd"><small>${cfg.label||'Pilih bentuk persamaan'}</small><button type="button" class="ddb" aria-haspopup="listbox" aria-expanded="false"></button><ul class="ddm" role="listbox" hidden></ul></div>`:'')+'<div class="exb"></div><button class="btn alt" type="button" style="margin-top:.6rem">Contoh lainnya</button>';
+  let val='1';
+  const body=d.querySelector('.exb'),go=()=>{const x=g(opts?val:undefined);body.innerHTML=`<p>${x[0]}</p>${sol(x[1])}`;M(body)};
+  if(cfg.after)$(cfg.after).insertAdjacentElement('afterend',d);else $('#'+id).appendChild(d);
+  if(opts){
+    const btn=d.querySelector('.ddb'),ul=d.querySelector('.ddm');
+    ul.innerHTML=opts.map((t,i)=>`<li role="option" tabindex="0" data-v="${i+1}">${t}</li>`).join('')+'<li role="option" tabindex="0" data-v="0">Acak (semua jenis)</li>';
+    const close=()=>{ul.hidden=true;btn.setAttribute('aria-expanded','false')};
+    const set=v=>{val=v;btn.innerHTML=v==='0'?'Acak (semua jenis)':opts[v-1];M(btn);
+      ul.querySelectorAll('li').forEach(li=>li.setAttribute('aria-selected',li.dataset.v===v));close();go()};
+    btn.onclick=()=>{ul.hidden=!ul.hidden;btn.setAttribute('aria-expanded',String(!ul.hidden))};
+    ul.onclick=e=>{const li=e.target.closest('li');if(li)set(li.dataset.v)};
+    ul.onkeydown=e=>{const li=e.target.closest('li');if(!li)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();set(li.dataset.v)}else if(e.key==='Escape')close()};
+    document.addEventListener('click',e=>{if(!d.querySelector('.dd').contains(e.target))close()});
+    M(ul);set('1');
+  }else go();
+  d.querySelector('.btn').onclick=go;
+}
+
+/* ---------- Tryout (bank soal dari Google Sheets) ---------- */
+const TK=['UN/US','Simak UI','Utul UGM','Ujian Mandiri ITB','STIS','STAN','UTBK'];
+let TD=null,TS=null,TTM=null,TLOADING=false;
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const partsHTML=ps=>(ps||[]).map(p=>p.t==='img'?`<img class="tq-img" loading="lazy" alt="Gambar soal" src="${esc(p.v)}">`:`<div class="tq-tx">${esc(p.v).replace(/\n/g,'<br>')}</div>`).join('')||'<i>(kosong)</i>';
+function putParts(el,ps){
+  el.innerHTML=partsHTML(ps);
+  el.querySelectorAll('img.tq-img').forEach(im=>{im.onerror=()=>{const b=document.createElement('div');b.className='box';b.textContent='Gambar tidak dapat dimuat. Jika berasal dari Google Drive, bagikan file dengan akses "Siapa saja yang memiliki link".';im.replaceWith(b)}});
+  M(el);
+}
+const DEMO={rows:[
+  {no:1,ket:'UN/US',materi:'Eksponen',soal:[{t:'text',v:'Nilai dari $2^3\\cdot 2^4$ adalah ...\nA. 64\nB. 128\nC. 256\nD. 512'}],bahas:[{t:'text',v:'$2^3\\cdot2^4=2^{7}=128$. Jawaban: B.'}]},
+  {no:2,ket:'UTBK',materi:'Fungsi Kuadrat',soal:[{t:'text',v:'Perhatikan gambar. Tentukan titik puncak parabola.'},{t:'img',v:'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150"><rect width="240" height="150" fill="#fff"/><path d="M20 20 Q120 230 220 20" fill="none" stroke="#1c7ed6" stroke-width="3"/><line x1="0" y1="45" x2="240" y2="45" stroke="#333"/><text x="100" y="140" font-size="12">Foto soal (contoh)</text></svg>')}],bahas:[{t:'text',v:'Puncak berada di tengah kedua titik potong.'}]},
+  {no:3,ket:'STAN',materi:'Persamaan Kuadrat',soal:[{t:'text',v:'Jumlah akar $2x^2-6x+1=0$ adalah ...'}],bahas:[{t:'text',v:'$x_1+x_2=-\\dfrac ba=3$.'}]}
+]};
+function loadTry(){
+  if(TLOADING)return;TLOADING=true;
+  const L=$('#tr-load');L.hidden=false;L.textContent='Memuat bank soal...';$('#tr-setup').hidden=true;
+  const done=()=>{TLOADING=false};
+  const ok=d=>{done();TD=d;L.hidden=true;buildTrySetup()};
+  const fail=e=>{done();L.hidden=false;L.innerHTML='Bank soal belum bisa dimuat: '+esc((e&&e.message)||e)+'<br>Pastikan fungsi <b>setupSpreadsheet()</b> sudah dijalankan. <button class="btn alt" id="tr-retry" type="button">Coba lagi</button>';$('#tr-retry').onclick=loadTry};
+  if(window.google&&google.script&&google.script.run)google.script.run.withSuccessHandler(ok).withFailureHandler(fail).getTryoutData();
+  else setTimeout(()=>ok(DEMO),250);
+}
+function initTry(){if(!TD&&!TLOADING)loadTry()}
+const trRows=()=>{const k=$('#tr-ket').value,m=$('#tr-mat').value;return TD.rows.filter(r=>(!k||r.ket===k)&&(!m||r.materi===m))};
+function buildTrySetup(){
+  const kets=TK.concat([...new Set(TD.rows.map(r=>r.ket).filter(k=>k&&!TK.includes(k)))]);
+  $('#tr-ket').innerHTML='<option value="">Semua jenis ujian ('+TD.rows.length+')</option>'+kets.map(k=>`<option value="${esc(k)}">${esc(k)} (${TD.rows.filter(r=>r.ket===k).length})</option>`).join('');
+  refreshMat();$('#tr-setup').hidden=false;
+}
+function refreshMat(){
+  const k=$('#tr-ket').value,cur=$('#tr-mat').value,rows=TD.rows.filter(r=>!k||r.ket===k),ms=[...new Set(rows.map(r=>r.materi).filter(Boolean))];
+  $('#tr-mat').innerHTML='<option value="">Semua materi</option>'+ms.map(m=>`<option value="${esc(m)}">${esc(m)} (${rows.filter(r=>r.materi===m).length})</option>`).join('');
+  if(ms.includes(cur))$('#tr-mat').value=cur;
+  updInfo();
+}
+function updInfo(){const n=trRows().length;$('#tr-info').textContent=n?`${n} soal tersedia dengan pilihan ini.`:'Belum ada soal untuk pilihan ini. Isi sheet "Tryout" atau ubah pilihan.';$('#tr-start').disabled=!n}
+function startTry(){
+  let qs=trRows();
+  qs=$('#tr-ord').value==='acak'?shuf(qs):qs.slice().sort((a,b)=>a.no-b.no);
+  const nv=$('#tr-n').value;if(nv!=='all')qs=qs.slice(0,+nv);
+  const tm=$('#tr-tm').checked?Math.max(1,+$('#tr-min').value||30):0;
+  TS={qs,i:0,a:qs.map(()=>null),rv:qs.map(()=>false),t0:Date.now(),end:tm?Date.now()+tm*60000:0,warn:false};
+  clearInterval(TTM);if(TS.end)TTM=setInterval(tick,1000);
+  $('#tr-setup').hidden=true;$('#tr-res').hidden=true;$('#tr-run').hidden=false;
+  renderRun();tick();window.scrollTo(0,0);
+}
+function tick(){
+  if(!TS||$('#tr-run').hidden)return;const el=$('#tr-time');
+  if(!TS.end){el.textContent='Tanpa batas waktu';return}
+  const s=Math.max(0,Math.round((TS.end-Date.now())/1000));
+  el.textContent='Sisa waktu '+String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  if(s<=0)finishTry(true);
+}
+function renderRun(){
+  const q=TS.qs[TS.i],rv=TS.rv[TS.i];
+  $('#tr-qh').innerHTML=`<b>Soal ${TS.i+1} dari ${TS.qs.length}</b> <span class="tag">${esc(q.ket||'-')}</span> <span class="tag">${esc(q.materi||'-')}</span>`;
+  putParts($('#tr-qb'),q.soal);
+  $('#tr-rev').hidden=rv;$('#tr-pbox').hidden=!rv;
+  if(rv)putParts($('#tr-pb'),q.bahas);
+  $('#tr-ok').classList.toggle('sel',TS.a[TS.i]===true);$('#tr-no').classList.toggle('sel',TS.a[TS.i]===false);
+  $('#tr-grid').innerHTML=TS.qs.map((_,i)=>`<button type="button" class="qn${TS.a[i]===true?' ok':TS.a[i]===false?' no':''}${i===TS.i?' cur':''}" data-i="${i}" aria-label="Soal ${i+1}">${i+1}</button>`).join('');
+  $('#tr-prev').disabled=TS.i===0;$('#tr-next').disabled=TS.i===TS.qs.length-1;
+  $('#tr-warn').textContent='';TS.warn=false;
+}
+function finishTry(auto){
+  clearInterval(TTM);
+  const qs=TS.qs;let ok=0,no=0,na=0;const bm={},bk={};
+  qs.forEach((q,i)=>{
+    const a=TS.a[i];if(a===true)ok++;else if(a===false)no++;else na++;
+    const m=q.materi||'-',k=q.ket||'-';
+    (bm[m]=bm[m]||[0,0])[1]++;(bk[k]=bk[k]||[0,0])[1]++;
+    if(a===true){bm[m][0]++;bk[k][0]++}
+  });
+  const skor=Math.round(ok/qs.length*100),u=Math.round((Date.now()-TS.t0)/1000);
+  const tb=(h,o)=>`<table class="t"><tr><th>${h}</th><th>Benar</th><th>Persen</th></tr>`+Object.keys(o).map(k=>`<tr><td>${esc(k)}</td><td>${o[k][0]} / ${o[k][1]}</td><td>${Math.round(o[k][0]/o[k][1]*100)}%</td></tr>`).join('')+'</table>';
+  const rv=qs.map((q,i)=>TS.a[i]===true?'':`<details class="card"><summary>No. ${i+1} &middot; ${esc(q.materi||'-')} &middot; ${esc(q.ket||'-')} (${TS.a[i]===false?'salah':'belum dinilai'})</summary><div class="rvb" data-i="${i}"></div></details>`).join('');
+  $('#tr-res').innerHTML=`<div class="pnl" style="text-align:center"><div class="score">${skor}</div><div>Skor: ${ok} benar dari ${qs.length} soal</div>${auto?'<div class="box" style="text-align:left">Waktu habis, tryout diakhiri otomatis.</div>':''}<div style="color:var(--mut)">Benar ${ok} &middot; Salah ${no} &middot; Belum dinilai ${na} &middot; Waktu ${Math.floor(u/60)} menit ${u%60} detik</div></div>`+
+    tb('Materi',bm)+'<div style="height:.8rem"></div>'+tb('Jenis ujian',bk)+
+    `<h3>Tinjau soal yang belum benar</h3><div id="tr-rl">${rv||'<div class="box">Semua soal dijawab benar. Kerja bagus!</div>'}</div>`+
+    '<div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem"><button class="btn" id="tr-again" type="button">Ulangi dengan pilihan yang sama</button><button class="btn alt" id="tr-back" type="button">Kembali ke pengaturan</button></div>';
+  $('#tr-run').hidden=true;$('#tr-res').hidden=false;window.scrollTo(0,0);
+  $('#tr-again').onclick=startTry;
+  $('#tr-back').onclick=()=>{$('#tr-res').hidden=true;$('#tr-setup').hidden=false};
+  const rl=$('#tr-rl');
+  if(rl)rl.addEventListener('toggle',e=>{
+    const d=e.target,b=d.querySelector&&d.querySelector('.rvb');
+    if(!d.open||!b||b.dataset.done)return;b.dataset.done=1;
+    const q=TS.qs[+b.dataset.i];
+    b.innerHTML='<p><b>Soal</b></p><div class="s"></div><div class="box"><b>Pembahasan</b><div class="p"></div></div>';
+    putParts(b.querySelector('.s'),q.soal);putParts(b.querySelector('.p'),q.bahas);
+  },true);
+  TS.fin=true;
+}
+function initTryUI(){
+  $('#tr-ket').onchange=refreshMat;$('#tr-mat').onchange=updInfo;
+  $('#tr-start').onclick=startTry;
+  $('#tr-reload').onclick=()=>{TD=null;loadTry()};
+  $('#tr-rev').onclick=()=>{TS.rv[TS.i]=true;renderRun()};
+  $('#tr-ok').onclick=()=>{TS.a[TS.i]=true;renderRun()};
+  $('#tr-no').onclick=()=>{TS.a[TS.i]=false;renderRun()};
+  $('#tr-prev').onclick=()=>{if(TS.i>0){TS.i--;renderRun()}};
+  $('#tr-next').onclick=()=>{if(TS.i<TS.qs.length-1){TS.i++;renderRun()}};
+  $('#tr-grid').onclick=e=>{const b=e.target.closest('.qn');if(b){TS.i=+b.dataset.i;renderRun()}};
+  $('#tr-fin').onclick=()=>{
+    const left=TS.a.filter(a=>a===null).length;
+    if(left&&!TS.warn){TS.warn=true;$('#tr-warn').textContent=`Masih ${left} soal belum dinilai. Klik Selesai sekali lagi untuk mengakhiri.`;return}
+    finishTry(false);
+  };
+}
+
+/* ---------- Kuis ---------- */
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const LET='ABCDE',T$=s=>'$'+s+'$',cc=n=>n===1?'':String(n);
+const nfd=v=>Number.isInteger(v)?nf(v):String(+v.toFixed(2)).replace('.',',');
+function fm(n,d){const g=gcd(Math.abs(n),Math.abs(d))||1;n/=g;d/=g;if(d<0){n=-n;d=-d}return d===1?String(n):(n<0?'-':'')+R`\dfrac{${Math.abs(n)}}{${d}}`}
+const vp=(a,e)=>Math.abs(e)>9?null:e>=0?String(Math.pow(a,e)):R`\dfrac{1}{${Math.pow(a,-e)}}`;
+const setS=(x,y)=>{const [u,v]=[x,y].sort((p,q)=>p-q);return R`\{${u},\ ${v}\}`};
+const setF=(n1,d1,n2,d2)=>{const a=[[n1,d1],[n2,d2]].sort((p,q)=>p[0]/p[1]-q[0]/q[1]);return R`\left\{${fm(a[0][0],a[0][1])},\ ${fm(a[1][0],a[1][1])}\right\}`};
+function mcq(bab,tag,q,ok,wr,e){
+  const seen=new Set([ok]),w=[];
+  for(const x of wr){if(x!=null&&!seen.has(x)){seen.add(x);w.push(x);if(w.length===4)break}}
+  if(w.length<4)return null;
+  return {bab,tag,q,e,o:shuf([{t:ok,ok:true}].concat(w.map(t=>({t,ok:false}))))};
+}
+const retry=g=>()=>{for(let i=0;i<80;i++){const r=g();if(r)return r}throw new Error('gagal membuat soal')};
+
+function qE1(){
+  const t=ri(0,2);
+  if(t===0){const a=pk([2,3]),m=ri(3,5),n=ri(2,3),p=ri(1,4),e=m+n-p,ok=vp(a,e);
+    return mcq('1','Eksponen',R`Nilai dari $\dfrac{${a}^{${m}}\cdot ${a}^{${n}}}{${a}^{${p}}}$ adalah ...`,T$(ok),
+      [vp(a,m*n-p),vp(a,m+n+p),vp(a,m-n-p),vp(a,m+n),vp(a,e+1),vp(a,e-1),vp(a,m-n+p)].map(x=>x&&T$(x)),
+      R`Sifat perkalian dan pembagian: $${a}^{${m}+${n}-${p}}=${a}^{${e}}=${ok}$.`)}
+  if(t===1){const [x,y]=pk([[2,3],[3,2],[2,5],[3,4],[4,3]]),n=ri(2,3),ok=R`\dfrac{${Math.pow(y,n)}}{${Math.pow(x,n)}}`;
+    return mcq('1','Eksponen',R`Nilai dari $\left(\dfrac{${x}}{${y}}\right)^{-${n}}$ adalah ...`,T$(ok),
+      [R`\dfrac{${Math.pow(x,n)}}{${Math.pow(y,n)}}`,R`-\dfrac{${Math.pow(y,n)}}{${Math.pow(x,n)}}`,R`\dfrac{${y*n}}{${x*n}}`,R`\dfrac{${x}}{${Math.pow(y,n)}}`,R`\dfrac{${Math.pow(y,n)}}{${x}}`,R`-\dfrac{${Math.pow(x,n)}}{${Math.pow(y,n)}}`].map(T$),
+      R`Pangkat negatif membalik pecahan: $\left(\dfrac{${y}}{${x}}\right)^{${n}}=${ok}$.`)}
+  const c=pk([2,3]),[n,m]=pk([[2,3],[3,2],[3,4]]),b=Math.pow(c,n);
+  return mcq('1','Eksponen',R`Nilai dari $${b}^{\frac{${m}}{${n}}}$ adalah ...`,T$(Math.pow(c,m)),
+    [Math.pow(c,n),Math.pow(c,m+n),c*m,Math.pow(c,m-1),Math.pow(c,m*n),b*m].filter(v=>v<=5000).map(T$),
+    R`$${b}=${c}^{${n}}$, maka $${b}^{\frac{${m}}{${n}}}=${c}^{${m}}=${Math.pow(c,m)}$.`);
+}
+function qE2(){
+  const c=pk([2,3,5,6,7]),p=ri(3,6),q=ri(1,p-1),op=pk(['+','-']),N=p*p*c,M=q*q*c,r=op==='+'?p+q:p-q,r2=op==='+'?p-q:p+q;
+  return mcq('1','Bentuk Akar',R`Bentuk sederhana dari $\sqrt{${N}}${op}\sqrt{${M}}$ adalah ...`,T$(R`${cc(r)}\sqrt{${c}}`),
+    [R`\sqrt{${op==='+'?N+M:N-M}}`,R`${p*q}\sqrt{${c}}`,R`${cc(r2)}\sqrt{${c}}`,R`${cc(r)}\sqrt{${2*c}}`,R`${r+1}\sqrt{${c}}`,R`${r*c}`].map(T$),
+    R`$\sqrt{${N}}=${p}\sqrt{${c}}$ dan $\sqrt{${M}}=${q}\sqrt{${c}}$, sehingga hasilnya $(${p}${op}${q})\sqrt{${c}}=${cc(r)}\sqrt{${c}}$.`);
+}
+function qE3(){
+  const [b,a]=pick2([2,3,5,6,7,10]),m=ri(1,4),k=(a-b)*m,op=pk(['+','-']),o2=op==='+'?'-':'+';
+  const in2=o=>R`\sqrt{${a}}${o}\sqrt{${b}}`,ex=(c,o)=>c===1?in2(o):`${c}(${in2(o)})`;
+  return mcq('1','Bentuk Akar',R`Hasil merasionalkan penyebut $\dfrac{${k}}{\sqrt{${a}}${op}\sqrt{${b}}}$ adalah ...`,T$(ex(m,o2)),
+    [ex(m,op),ex(k,o2),ex(m+1,o2),ex(k,op),R`${cc(m)}\sqrt{${a-b}}`,ex(m*2,o2),ex(m+2,o2)].map(T$),
+    R`Kalikan dengan sekawan: $\dfrac{${k}(${in2(o2)})}{${a}-${b}}=\dfrac{${k}(${in2(o2)})}{${a-b}}=${ex(m,o2)}$.`);
+}
+function qFE(){
+  const A=pk([{t:'2',v:2},{t:'3',v:3},{t:'4',v:4},{t:'\\dfrac12',b:'\\left(\\dfrac12\\right)',v:.5},{t:'\\dfrac13',b:'\\left(\\dfrac13\\right)',v:1/3}]),k=pk([-3,-2,-1,1,2,3,4]),c=pk([-4,-3,-2,-1,1,2,3,4,5]);
+  const kk=k===1?'':k===-1?'-':k+'\\cdot ',fx=R`$f(x)=${kk}${A.b||A.t}^{x}${c<0?'-':'+'}${Math.abs(c)}$`,t=ri(0,2);
+  if(t===0)return mcq('1','Fungsi Eksponen',R`Persamaan asimtot datar dari ${fx} adalah ...`,T$(`y=${c}`),
+    [`y=${-c}`,`y=${k+c}`,`x=${c}`,`y=${k}`,`y=${k*c}`,'y=0'].map(T$),R`Pada $f(x)=k\cdot a^x+c$, asimtot datarnya $y=c=${c}$.`);
+  if(t===1)return mcq('1','Fungsi Eksponen',R`Titik potong grafik ${fx} dengan sumbu-$y$ adalah ...`,T$(R`(0,\ ${k+c})`),
+    [R`(0,\ ${c})`,R`(0,\ ${k})`,R`(${k+c},\ 0)`,R`(0,\ ${k*c})`,R`(0,\ ${k+c+1})`,R`(0,\ ${k-c})`].map(T$),R`$f(0)=${k}\cdot1${c<0?'-':'+'}${Math.abs(c)}=${k+c}$, jadi titiknya $(0,${k+c})$.`);
+  const gt=k>0?'>':'<',le=k>0?'\\ge':'\\le',rv=k>0?'<':'>';
+  return mcq('1','Fungsi Eksponen',R`Daerah hasil (range) dari ${fx} adalah ...`,T$(`y${gt}${c}`),
+    [`y${rv}${c}`,`y${le} ${c}`,`y${gt}${k+c}`,`y>0`,R`y\in\mathbb{R}`,`y${gt}${-c}`].map(T$),R`Karena $k${gt}0$ dan asimtot $y=${c}$, rangenya $y${gt}${c}$.`);
+}
+function qPE(){
+  const t=ri(0,2);
+  if(t===0){let a,r,p,c;do{a=pk([2,3,5]);r=ri(2,4);p=ri(2,4);c=ri(-3,4)}while(c===0||r===c||(r-c)%p!==0);
+    return mcq('1','Persamaan Eksponen',R`Penyelesaian dari $${a}^{${lin(p,c)}}=${Math.pow(a,r)}$ adalah $x=$ ...`,T$(fm(r-c,p)),
+      [fm(r+c,p),fm(c-r,p),fm(r,p),fm(r-c+p,p),fm(r-c-p,p),fm(r-c,1)].map(T$),
+      R`$${Math.pow(a,r)}=${a}^{${r}}$, maka $${lin(p,c)}=${r}$ sehingga $x=${fm(r-c,p)}$.`)}
+  if(t===1){const [u,v]=dist(0,3),S=Math.pow(2,u)+Math.pow(2,v),P=Math.pow(2,u+v);
+    return mcq('1','Persamaan Eksponen',R`Himpunan penyelesaian dari $4^{x}-${S}\cdot2^{x}+${P}=0$ adalah ...`,T$(R`\{${u},\ ${v}\}`),
+      [R`\{${Math.pow(2,u)},\ ${Math.pow(2,v)}\}`,R`\{${u+1},\ ${v+1}\}`,R`\{${-u},\ ${-v}\}`,R`\{${u},\ ${v+1}\}`,R`\{${u-1},\ ${v}\}`,R`\{${v},\ ${v+1}\}`].map(T$),
+      R`Misalkan $y=2^x$: $y^2-${S}y+${P}=0$, yaitu $(y-${Math.pow(2,u)})(y-${Math.pow(2,v)})=0$. Maka $2^x=${Math.pow(2,u)}$ atau $2^x=${Math.pow(2,v)}$, sehingga $x=${u}$ atau $x=${v}$.`)}
+  const [a,b]=pk([[2,3],[3,5],[5,7],[2,7]]),c=ri(1,6);
+  return mcq('1','Persamaan Eksponen',R`Nilai $x$ yang memenuhi $${a}^{x-${c}}=${b}^{x-${c}}$ adalah ...`,T$(c),
+    [-c,0,c+1,c-1,a*c,b*c,2*c].map(T$),R`Basis berbeda dengan pangkat sama, maka pangkatnya nol: $x-${c}=0$ sehingga $x=${c}$.`);
+}
+function qApp(){
+  const t=ri(0,3),B='1',G='Penerapan Eksponen';
+  if(t===0){const o=pk(['bakteri','jamur','sel']),N0=pk([50,100,200,500]),T=pk([2,3,4]),k=ri(2,4),a=pk([2,3]),t0=k*T,v=N0*Math.pow(a,k);
+    return mcq(B,G,`Jumlah ${o} mula-mula ${N0}. Jumlahnya menjadi ${a===2?'dua':'tiga'} kali lipat setiap ${T} jam. Berapa jumlahnya setelah ${t0} jam?`,nfd(v),
+      [N0*a*k,N0*Math.pow(a,k+1),N0*Math.pow(a,k-1),N0*a*t0,N0*(a+k),N0*k].map(nfd),
+      R`$N=N_0\cdot a^{t/T}=${N0}\cdot${a}^{${t0}/${T}}=${N0}\cdot${a}^{${k}}=${nf(v)}$.`)}
+  if(t===1){const N0=pk([1000,2000,5000,10000]),r=pk([10,20,50]),y=ri(2,3),f2=(e)=>N0*Math.pow(100+r,e)/Math.pow(100,e),v=f2(y);
+    return mcq(B,G,`Jumlah penduduk suatu desa ${nf(N0)} jiwa dan bertambah ${r}% setiap tahun. Berapa jumlah penduduk setelah ${y} tahun?`,nfd(v),
+      [N0*(100+r*y)/100,f2(y-1),f2(1),N0*r*y/100,f2(y+1),N0*(100+r)/100*y].map(nfd),
+      R`$N=N_0(1+r)^t=${nf(N0)}(1+${dm(r/100)})^{${y}}=${nf(v)}$.`)}
+  if(t===2){const k=ri(2,4),m=pk([5,10,25]),M0=m*Math.pow(2,k),T=pk([2,3,5]),t0=k*T,v=M0/Math.pow(2,k);
+    return mcq(B,G,`Massa awal suatu zat radioaktif ${M0} gram dengan waktu paruh ${T} hari. Berapa gram massa yang tersisa setelah ${t0} hari?`,nfd(v),
+      [M0/Math.pow(2,k+1),M0/Math.pow(2,k-1),M0/(2*k),M0/k,M0/2,M0-k*T].map(nfd),
+      R`$N=N_0\left(\dfrac12\right)^{t/T}=${M0}\left(\dfrac12\right)^{${k}}=\dfrac{${M0}}{${Math.pow(2,k)}}=${nfd(v)}$.`)}
+  const V0=pk([5,10,20,40])*1000000,r=pk([10,20]),y=ri(2,3),f2=(e)=>V0*Math.pow(100-r,e)/Math.pow(100,e),v=f2(y),R$=x=>'Rp'+nfd(x);
+  return mcq(B,G,`Harga sebuah mesin Rp${nf(V0)} dan menyusut ${r}% setiap tahun. Berapa nilai mesin setelah ${y} tahun?`,R$(v),
+    [V0*(100-r*y)/100,f2(y-1),f2(1),V0*r*y/100,f2(y+1)].map(R$),
+    R`$N=N_0(1-r)^t=${nf(V0)}(${dm((100-r)/100)})^{${y}}=${nf(v)}$.`);
+}
+function qPK1(){
+  const t=ri(0,2),B='2',G='Persamaan Kuadrat';
+  if(t===0){const [r1,r2]=dist(-7,7,true);
+    return mcq(B,G,R`Himpunan penyelesaian dari $${pl(1,-(r1+r2),r1*r2)}=0$ adalah ...`,T$(setS(r1,r2)),
+      [setS(-r1,-r2),setS(r1,-r2),setS(-r1,r2),setS(-(r1+r2),r1*r2),setS(r1+1,r2),setS(r1,r2+1)].map(T$),
+      R`Faktorkan: $ ${xm(r1)}${xm(r2)}=0$, sehingga $x=${r1}$ atau $x=${r2}$.`)}
+  if(t===1){let m,p,nn,qq,a,b,c;const nz=[-5,-4,-3,-2,-1,1,2,3,4,5];
+    do{m=pk([1,2,3]);p=pk([1,2]);nn=pk(nz);qq=pk(nz);a=m*p;b=m*qq+nn*p;c=nn*qq}
+    while(m*p===1||gcd(m,nn)!==1||gcd(p,qq)!==1||gc3(a,b,c)!==1||b===0||nn*p===m*qq);
+    return mcq(B,G,R`Himpunan penyelesaian dari $${pl(a,b,c)}=0$ adalah ...`,T$(setF(-nn,m,-qq,p)),
+      [setF(nn,m,qq,p),setF(-nn,m,qq,p),setF(nn,m,-qq,p),setF(-m,nn,-p,qq),setF(-nn,p,-qq,m),setF(-nn,m,-qq,1)].map(T$),
+      R`Faktorkan: $ (${lf(m,nn)})(${lf(p,qq)})=0$, sehingga $x=${fm(-nn,m)}$ atau $x=${fm(-qq,p)}$.`)}
+  const P=pk([-4,-3,-2,-1,1,2,3,4]),Q=pk([2,3,5,6,7,10,11]);
+  return mcq(B,G,R`Akar-akar persamaan $${pl(1,2*P,P*P-Q)}=0$ adalah ...`,T$(R`x=${-P}\pm\sqrt{${Q}}`),
+    [R`x=${P}\pm\sqrt{${Q}}`,R`x=${-P}\pm${Q}`,R`x=${-2*P}\pm\sqrt{${Q}}`,R`x=${-P}\pm\sqrt{${Q+1}}`,R`x=${-P}\pm\sqrt{${Q+P*P}}`,R`x=${P}\pm${Q}`].map(T$),
+    R`Kuadrat sempurna: $(x${sn(P)})^2=${Q}$, maka $x=${-P}\pm\sqrt{${Q}}$.`);
+}
+function qPK2(){
+  const t=ri(0,2),B='2',G='Persamaan Kuadrat';
+  if(t===0){const [r1,r2]=dist(-7,7,true),S=r1+r2,P=r1*r2;
+    return mcq(B,G,R`Jika $x_1$ dan $x_2$ akar-akar $${pl(1,-S,P)}=0$, nilai $x_1^2+x_2^2$ adalah ...`,T$(S*S-2*P),
+      [S*S+2*P,S*S-P,S*S-4*P,S-2*P,P*P-2*S,S*S].map(T$),
+      R`$x_1+x_2=${S}$ dan $x_1x_2=${P}$, maka $x_1^2+x_2^2=(x_1+x_2)^2-2x_1x_2=${S*S}-2(${P})=${S*S-2*P}$.`)}
+  if(t===1){const b=pk([-8,-6,-4,4,6,8,10]),k=b*b/4;
+    return mcq(B,G,R`Persamaan $x^2${sn(b)}x+k=0$ mempunyai dua akar real kembar. Nilai $k$ adalah ...`,T$(k),
+      [b*b/2,b*b,-k,b/2,k+1,k-1].map(T$),R`Akar kembar berarti $D=0$: $(${b})^2-4k=0$ sehingga $k=${k}$.`)}
+  const [r1,r2]=dist(-5,5,true),S=r1+r2,P=r1*r2,p=pk([2,3]),eq=E=>T$(pl(1,E[0],E[1])+'=0');
+  return mcq(B,G,R`Persamaan $${pl(1,-S,P)}=0$ mempunyai akar $\alpha$ dan $\beta$. Persamaan kuadrat baru dengan akar $${p}\alpha$ dan $${p}\beta$ adalah ...`,eq([-p*S,p*p*P]),
+    [[p*S,p*p*P],[-p*S,p*P],[-S,p*p*P],[-p*S,P],[-p*p*S,p*p*P],[-p*S,-p*p*P]].map(eq),
+    R`Jumlah akar baru $=${p}(\alpha+\beta)=${p*S}$ dan hasil kali $=${p*p}\alpha\beta=${p*p*P}$. Persamaan: $x^2-(${p*S})x+(${p*p*P})=0$.`);
+}
+function qFK(){
+  const a=pk([-2,-1,1,2]),p=pk([-4,-3,-2,-1,1,2,3,4]),q=pk([-5,-4,-3,-2,-1,1,2,3,4,5]),b=-2*a*p,c=a*p*p+q,t=ri(0,2),B='2',G='Fungsi Kuadrat',fx=R`$f(x)=${pl(a,b,c)}$`;
+  if(t===0)return mcq(B,G,R`Titik puncak grafik ${fx} adalah ...`,T$(R`(${p},\ ${q})`),
+    [R`(${-p},\ ${q})`,R`(${p},\ ${-q})`,R`(${-p},\ ${-q})`,R`(${q},\ ${p})`,R`(${p},\ ${c})`,R`(${b},\ ${c})`].map(T$),
+    R`$x_p=-\dfrac{b}{2a}=-\dfrac{${b}}{${2*a}}=${p}$ dan $y_p=f(${p})=${q}$.`);
+  if(t===1)return mcq(B,G,R`Nilai ${a>0?'minimum':'maksimum'} dari ${fx} adalah ...`,T$(q),
+    [-q,p,c,-p,q+1,q+a].map(T$),R`$x_p=${p}$, maka nilai ${a>0?'minimum':'maksimum'} $f(${p})=${q}$.`);
+  return mcq(B,G,R`Persamaan sumbu simetri grafik ${fx} adalah ...`,T$(`x=${p}`),
+    [`x=${-p}`,`x=${q}`,`x=${c}`,`x=${-b}`,`x=${2*p}`,`x=${b}`].map(T$),R`$x=-\dfrac{b}{2a}=-\dfrac{${b}}{${2*a}}=${p}$.`);
+}
+function qSF(){
+  const B='2',G='Menyusun Fungsi Kuadrat',fz=E=>T$('f(x)='+pl(E[0],E[1],E[2]));
+  if(ri(0,1)===0){
+    let a,r1,r2,s,ys;do{a=pk([-2,-1,1,2]);[r1,r2]=dist(-4,4);s=ri(-3,5);ys=a*(s-r1)*(s-r2)}while(s===r1||s===r2||Math.abs(ys)>15||r2-r1>6);
+    const E=[a,-a*(r1+r2),a*r1*r2];
+    return mcq(B,G,R`Grafik fungsi kuadrat memotong sumbu-$x$ di $(${r1},0)$ dan $(${r2},0)$ serta melalui titik $(${s},${ys})$. Fungsi kuadratnya adalah ...`,fz(E),
+      [[-a,a*(r1+r2),-a*r1*r2],[a,a*(r1+r2),a*r1*r2],[1,-(r1+r2),r1*r2],[a,-a*(r1+r2),-a*r1*r2],[2*a,-2*a*(r1+r2),2*a*r1*r2],[-a,a*(r1+r2),a*r1*r2]].map(fz),
+      R`$y=a${xm(r1)}${xm(r2)}$. Substitusi $(${s},${ys})$: $${ys}=a(${s-r1})(${s-r2})$ sehingga $a=${a}$. Jadi $f(x)=${pl(E[0],E[1],E[2])}$.`);
+  }
+  let a,p,q,s;do{a=pk([-2,-1,1,2]);p=ri(-3,3);q=ri(-5,5);s=p+pk([-2,-1,1,2])}while(p===0);
+  const ys=a*(s-p)*(s-p)+q,E=[a,-2*a*p,a*p*p+q];
+  return mcq(B,G,R`Grafik fungsi kuadrat mempunyai titik puncak $(${p},${q})$ dan melalui titik $(${s},${ys})$. Fungsi kuadratnya adalah ...`,fz(E),
+    [[a,2*a*p,a*p*p+q],[-a,2*a*p,-a*p*p+q],[a,-2*a*p,a*p*p-q],[a,-2*a*p,a*p*p],[1,-2*p,p*p+q],[2*a,-4*a*p,2*a*p*p+q]].map(fz),
+    R`$y=a(x-p)^2+q=a${xm(p)}^2${sn(q)}$. Substitusi $(${s},${ys})$: $${ys-q}=${(s-p)*(s-p)}a$ sehingga $a=${a}$. Jadi $f(x)=${pl(E[0],E[1],E[2])}$.`);
+}
+const SLOTS=[qE1,qE2,qE3,qFE,qPE,qApp,qPK1,qPK2,qFK,qSF];
+let QZ=null;
+function startQuiz(){QZ={qs:SLOTS.map(g=>retry(g)()),i:0,a:[]};renderQ()}
+function renderQ(){
+  const el=$('#quiz');
+  if(QZ.i>=QZ.qs.length){
+    const sc=QZ.a.filter(Boolean).length,msg=sc===10?'Sempurna!':sc>=7?'Bagus, terus berlatih.':sc>=4?'Cukup baik, pelajari lagi bagian yang masih salah.':'Pelajari lagi materinya, lalu coba latihan baru.';
+    el.innerHTML=`<div class="pnl" style="text-align:center"><div class="score">${sc*10}</div><div>Skor: ${sc} benar dari ${QZ.qs.length} soal</div><div style="color:var(--mut)">${msg}</div></div>`+
+      '<table class="t"><tr><th>No</th><th>Bab</th><th>Materi</th><th>Hasil</th></tr>'+QZ.qs.map((q,i)=>`<tr><td>${i+1}</td><td>Bab ${q.bab}</td><td>${q.tag}</td><td>${QZ.a[i]?'Benar':'Salah'}</td></tr>`).join('')+'</table>'+
+      '<button class="btn" style="margin-top:1rem" id="again" type="button">Latihan Baru</button>';
+    $('#again').onclick=startQuiz;return;
+  }
+  const q=QZ.qs[QZ.i];
+  el.innerHTML=`<div class="trbar"><b>Soal ${QZ.i+1} dari ${QZ.qs.length}</b><span class="tag">Bab ${q.bab} &middot; ${q.tag}</span></div><div class="qbar">${QZ.qs.map((_,k)=>`<i class="${k<QZ.i?(QZ.a[k]?'ok':'no'):k===QZ.i?'cur':''}"></i>`).join('')}</div><p style="font-size:1.1rem;margin:.6rem 0">${q.q}</p>`+
+    q.o.map((o,i)=>`<button class="opt" data-i="${i}">${LET[i]}. ${o.t}</button>`).join('')+'<div id="pb"></div>';
+  M(el);
+  el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,ok=q.o[i].ok;QZ.a[QZ.i]=ok;
+    el.querySelectorAll('.opt').forEach((x,j)=>{x.disabled=true;if(q.o[j].ok)x.classList.add('ok');else if(j===i)x.classList.add('no')});
+    const last=QZ.i===QZ.qs.length-1,kj=LET[q.o.findIndex(o=>o.ok)];
+    $('#pb').innerHTML=`<div class="box"><b>${ok?'Benar.':'Belum tepat. Jawaban yang benar: '+kj+'.'}</b> ${q.e}</div><button class="btn" id="nx" type="button">${last?'Lihat hasil':'Soal berikutnya'}</button>`;
+    M($('#pb'));$('#nx').onclick=()=>{QZ.i++;renderQ();window.scrollTo(0,0)};
+  });
+}
+
+/* ---------- Inisialisasi ---------- */
+window.addEventListener('load',()=>{
+  buildNav();initTryUI();
+  try{VM=localStorage.getItem('mode')||'auto'}catch(e){}
+  $('#viewmode').value=VM;applyView();
+  $('#wm').innerHTML='<span>SMA S Al Kautsar, Unggul-Islami-Global</span>'.repeat(150);
+  let d=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches;
+  try{const t=localStorage.getItem('tema');if(t)d=t==='d'}catch(e){}
+  document.querySelectorAll('input.sl').forEach(i=>{
+    const o=$('#'+i.id+'v'),u=()=>{o.textContent=f(+i.value)};u();
+    i.addEventListener('input',()=>{u();window[i.dataset.up]()});
+  });
+  CE=mkChart('#ce',[-4,4],[-8,10]);CQ=mkChart('#cq',[-10,10],[-10,10]);
+  CG=new Chart($('#cg'),{type:'scatter',data:{datasets:[]},options:{animation:false,maintainAspectRatio:false,plugins:{legend:{labels:{color:css('--ink'),boxWidth:14}}},scales:{x:{type:'linear',min:0,max:10,grid:{color:css('--line')},ticks:{color:css('--mut')},title:{display:true,text:'periode (t)',color:css('--mut')}},y:{type:'linear',min:0,grid:{color:css('--line')},ticks:{color:css('--mut')}}}}});
+  setTheme(d);
+  ['ka','kb','kc'].forEach(i=>$('#'+i).addEventListener('input',upK));
+  upK();startQuiz();Object.keys(EXG).forEach(k=>mkEx(k,EXG[k],k==='s-pe'?{opts:PEF.map(t=>'$'+t+'$')}:k==='s-sf'?{opts:SFRM,label:'Pilih rumus yang digunakan'}:k==='s-pk'?{opts:PKM,label:'Pilih cara atau topik'}:{}));
+  mkEx('s-sf',gSFG,{title:'Contoh Soal Berdasarkan Grafik',label:'Pilih rumus yang digunakan',opts:SFRM});
+  mkEx('s-app',gApp,{label:'Pilih jenis penerapan',opts:APPF});
+  mkEx('s-pk',gPKB,{title:'Contoh Soal Menyusun Persamaan Kuadrat Baru',label:'Pilih jenis akar-akar baru',after:'#pkb',opts:PKBF});M();
+});
+</script>
+</body>
+</html>
